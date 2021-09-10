@@ -14,7 +14,7 @@ public class LocalGameMap implements GameMap {
     private File activeWorldFolder;
 
     private World bukkitWorld;
-    private boolean isLoaded = false;
+    private boolean isLoaded;
 
     public LocalGameMap(File worldFolder, String worldName, boolean loadOnInit) {
         this.sourceWorldFolder = new File(worldFolder, worldName);
@@ -31,6 +31,7 @@ public class LocalGameMap implements GameMap {
 
         try {
             FileDelete.copyFolder(sourceWorldFolder, activeWorldFolder);
+            isLoaded = true;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -49,7 +50,7 @@ public class LocalGameMap implements GameMap {
     public void unload() {
         if(bukkitWorld != null) Bukkit.unloadWorld(bukkitWorld, false);
         if(activeWorldFolder != null) FileDelete.delete(activeWorldFolder);
-
+        isLoaded = false;
         bukkitWorld = null;
         activeWorldFolder = null;
     }

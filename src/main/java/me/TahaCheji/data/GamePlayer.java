@@ -8,16 +8,23 @@ import org.bukkit.scheduler.BukkitTask;
 
 public class GamePlayer {
 
-    private Player player = null;
+    private Player player;
     private Game game;
     private int lives;
     private double mana;
-    private final double MAXMANA = getGame().getMana();
+    private double MAXMANA;
     private BukkitTask regen;
+    private PlayerLocation playerLocation;
 
 
-    public GamePlayer(Player player) {
+    public GamePlayer(Player player, Game game) {
         this.player = player;
+        this.game = game;
+    }
+
+    public GamePlayer(Player player, PlayerLocation location) {
+        this.player = player;
+        this.playerLocation = location;
     }
 
     public Player getPlayer() {
@@ -32,10 +39,6 @@ public class GamePlayer {
         return lives;
     }
 
-    public void setGame(Game game) {
-        this.game = game;
-    }
-
     public Game getGame() {
         return game;
     }
@@ -46,7 +49,18 @@ public class GamePlayer {
 
     public void setMana(double mana){
         this.mana = mana;
+    }
 
+    public PlayerLocation getPlayerLocation() {
+        return playerLocation;
+    }
+
+    public void setMAXMANA(double MAXMANA) {
+        this.MAXMANA = MAXMANA;
+    }
+
+    public void setPlayerLocation(PlayerLocation playerLocation) {
+        this.playerLocation = playerLocation;
     }
 
     public void setLives(int lives) {

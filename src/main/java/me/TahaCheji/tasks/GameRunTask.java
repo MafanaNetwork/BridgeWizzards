@@ -1,5 +1,6 @@
 package me.TahaCheji.tasks;
 
+import me.TahaCheji.Main;
 import me.TahaCheji.data.Game;
 import me.TahaCheji.data.GamePlayer;
 import me.TahaCheji.scoreboards.InGameScoreBoard;
@@ -15,9 +16,8 @@ public class GameRunTask extends BukkitRunnable {
         this.game = game;
         this.game.setState(Game.GameState.PREPARATION);
         this.game.assignSpawnPositions();
-        this.game.sendMessage("&6[!] You've been teleported.");
-        this.game.sendMessage("&a[*] The game will begin in " + this.startIn + " seconds...");
-        InGameScoreBoard.setGameScoreboard(game);
+        this.game.sendMessage("You've been teleported.");
+        this.game.sendMessage("The game will begin in " + this.startIn + " seconds...");
         this.game.setMovementFrozen(true);
     }
 
@@ -26,12 +26,12 @@ public class GameRunTask extends BukkitRunnable {
         if (startIn <= 1) {
             this.cancel();
             this.game.setState(Game.GameState.ACTIVE);
-            this.game.sendMessage("&a[!] The game has started.");
+            this.game.sendMessage("The game has started.");
             this.game.setMovementFrozen(false);
-            InGameScoreBoard.updateScoreBoard(game);
+            new ActiveGameTask(game).runTaskTimer(Main.getInstance(), 0, 20);
         } else {
             startIn -= 1;
-            this.game.sendMessage("&c[*] The game will begin in " + startIn + " second" + (startIn == 1 ? "" : "s"));
+            this.game.sendMessage("The game will begin in " + startIn + " second" + (startIn == 1 ? "" : "s"));
         }
     }
 }

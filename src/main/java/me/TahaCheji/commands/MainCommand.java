@@ -1,5 +1,6 @@
 package me.TahaCheji.commands;
 
+import me.TahaCheji.Main;
 import me.TahaCheji.data.Game;
 import me.TahaCheji.data.GameData;
 import me.TahaCheji.data.GamePlayer;
@@ -19,8 +20,8 @@ public class MainCommand implements CommandExecutor {
                     player.sendMessage(ChatColor.RED + "Error: /bz join [GameName]");
                     return true;
                 }
-                Game game = GameData.getGame(args[1]);
-                game.joinGame(new GamePlayer(player));
+                Game game = Main.getInstance().getGame(args[1]);
+                game.joinGame(new GamePlayer(player, game));
             }
         }
         return false;

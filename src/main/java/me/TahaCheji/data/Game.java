@@ -2,10 +2,11 @@ package me.TahaCheji.data;
 
 import me.TahaCheji.Main;
 import me.TahaCheji.mapUtil.GameMap;
+import me.TahaCheji.scoreboards.InGameScoreBoard;
+import me.TahaCheji.scoreboards.LobbyScoreBoard;
 import me.TahaCheji.tasks.GameCountdownTask;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -27,9 +28,14 @@ public class Game {
     private final GameMap map;
     private Location p1Location;
     private Location p2Location;
+    private Location lobbySpawn;
+
 
     private GameState gameState = GameState.LOBBY;
     private boolean movementFrozen = false;
+    private int gameTime = 300;
+
+    private List<GamePlayer> activePlayers = new ArrayList<>();
 
 
     public Game(String name, ItemStack gameIcon, GameMode gameMode, int mana, int lives, GameMap map) {
@@ -45,58 +51,59 @@ public class Game {
         GameData.saveGame(this);
     }
 
-    public boolean joinGame(GamePlayer gamePlayer) {
+    public void joinGame(GamePlayer gamePlayer) {
         if (isState(GameState.LOBBY) || isState(GameState.STARTING)) {
-            if (getPlayers().size() == 2) {
+            if (activePlayers.size() == 2) {
                 gamePlayer.sendMessage("Error: This game is full.");
-                return false;
+                return;
             }
         }
-        getPlayers().add(gamePlayer);
+        if(!map.isLoaded()) {
+            map.load();
+            World world = map.getWorld();
+            p1Location.setWorld(world);
+            p2Location.setWorld(world);
+            lobbySpawn.setWorld(world);
+        }
+        gamePlayer.setMAXMANA(getMana());
+        gamePlayer.setMana(getMana());
+        activePlayers.add(gamePlayer);
+        gamePlayer.sendMessage("Game: " + activePlayers.size() + "/" + "2");
+        if(p1 == null) {
+            p1 = gamePlayer;
+        } else {
+            p2 = gamePlayer;
+        }
         gamePlayer.getPlayer().getInventory().clear();
         gamePlayer.getPlayer().getInventory().setArmorContents(null);
         gamePlayer.getPlayer().setGameMode(org.bukkit.GameMode.ADVENTURE);
         gamePlayer.getPlayer().setHealth(gamePlayer.getPlayer().getMaxHealth());
-        if (getPlayers().size() == 2 && !isState(GameState.STARTING)) {
+        gamePlayer.teleport(lobbySpawn);
+        gamePlayer.setPlayerLocation(PlayerLocation.GAMELOBBY);
+
+        Main.getInstance().setGame(gamePlayer.getPlayer(), this);
+        InGameScoreBoard.setGameScoreboard(gamePlayer);
+        if (activePlayers.size() == 2 && !isState(GameState.STARTING)) {
             setState(GameState.STARTING);
             sendMessage("The game will begin in 20 seconds...");
+            Main.getInstance().addActiveGame(this);
             startCountdown();
         }
-        Main.getInstance().setGame(gamePlayer.getPlayer(), this);
-        return true;
     }
 
 
-    public void startGame() {
-        p1.getPlayer().getInventory().clear();
-        p1.getPlayer().getInventory().setArmorContents(null);
-        p2.getPlayer().getInventory().clear();
-        p2.getPlayer().getInventory().setArmorContents(null);
-
-        map.load();
-        World world = map.getWorld();
-        Location newP1Location = new Location(world, p1Location.getX(), p1Location.getY(), p1Location.getZ());
-        p1.teleport(newP1Location);
-        Location newP2Location = new Location(world, p2Location.getX(), p2Location.getY(), p2Location.getZ());
-        p2.teleport(newP2Location);
-        //stop movement
-        //start game count down
-
-    }
 
     public void stopGame() {
         map.unload();
+        Main.getInstance().removeActiveGame(this);
         for(GamePlayer player : getPlayers()) {
             player.sendMessage("Game has ended");
-            player.teleport(new Location(Bukkit.getWorld("world") ,0, 0, 0));
+            player.teleport(Main.getInstance().getLobbyPoint());
             player.getPlayer().getInventory().clear();
             player.getPlayer().getInventory().setArmorContents(null);
+            LobbyScoreBoard.setLobbyScoreBoard(player);
         }
 
-    }
-
-    public void startCountdown() {
-        new GameCountdownTask(this).runTaskTimer(Main.getInstance(), 0, 20);
     }
 
     public Location assignSpawnPositions() {
@@ -109,12 +116,12 @@ public class Game {
         return null;
     }
 
-    public void setP1(GamePlayer p1) {
-        this.p1 = p1;
+    public void startCountdown() {
+        new GameCountdownTask(this).runTaskTimer(Main.getInstance(), 0, 20);
     }
 
-    public void setP2(GamePlayer p2) {
-        this.p2 = p2;
+    public void setLobbySpawn(Location lobbySpawn) {
+        this.lobbySpawn = lobbySpawn;
     }
 
     public void setP1Location(Location p1Location) {
@@ -124,6 +131,15 @@ public class Game {
     public void setP2Location(Location p2Location) {
         this.p2Location = p2Location;
     }
+
+    public boolean isP1(Player player) {
+        return player.getUniqueId().toString().contains(p1.getPlayer().getUniqueId().toString());
+    }
+
+    public boolean isP2(Player player) {
+        return player.getUniqueId().toString().contains(p2.getPlayer().getUniqueId().toString());
+    }
+
 
     public String getName() {
         return name;
@@ -154,10 +170,7 @@ public class Game {
     }
 
     public List<GamePlayer> getPlayers() {
-        List<GamePlayer> getPlayers = new ArrayList<>();
-        getPlayers.add(p1);
-        getPlayers.add(p2);
-        return getPlayers;
+        return activePlayers;
     }
 
     public boolean isState(GameState state) {
@@ -176,6 +189,14 @@ public class Game {
         for (GamePlayer gamePlayer : getPlayers()) {
             gamePlayer.sendMessage(message);
         }
+    }
+
+    public void setGameTime(int gameTime) {
+        this.gameTime = gameTime;
+    }
+
+    public int getGameTime() {
+        return gameTime;
     }
 
     public void setMovementFrozen(boolean movementFrozen) {
@@ -197,6 +218,15 @@ public class Game {
     public GameMode getGameMode() {
         return gameMode;
     }
+
+    public GamePlayer getGamePlayer(Player player) {
+        for (GamePlayer gamePlayer : getPlayers()) {
+                if (gamePlayer.getPlayer() == player) {
+                    return gamePlayer;
+                }
+            }
+        return null;
+        }
 
     public enum GameState {
         LOBBY, STARTING, PREPARATION, ACTIVE, DEATHMATCH, ENDING

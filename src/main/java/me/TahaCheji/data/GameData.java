@@ -3,6 +3,7 @@ package me.TahaCheji.data;
 import me.TahaCheji.Main;
 import me.TahaCheji.mapUtil.GameMap;
 import me.TahaCheji.mapUtil.LocalGameMap;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -27,11 +28,19 @@ public class GameData {
             pD.set("data.gameMana", game.getMana());
             pD.set("data.gameLives", game.getLives());
             pD.set("data.gameMap", game.getMap().getName());
+            pD.set("p1Spawn.x", 0);
+            pD.set("p1Spawn.y", 0);
+            pD.set("p1Spawn.z", 0);
+
+            pD.set("p2Spawn.x", 0);
+            pD.set("p2Spawn.y", 0);
+            pD.set("p2Spawn.z", 0);
+
+            pD.set("lobby.x", 0);
+            pD.set("lobby.y", 0);
+            pD.set("lobby.z", 0);
             pD.save(gameData);
         }
-        pD.set("data.p1Location", game.getP1Location());
-        pD.set("data.p2Location", game.getP2Location());
-        pD.save(gameData);
     }
 
     public static List<Game> getAllSavedGames() {
@@ -47,13 +56,13 @@ public class GameData {
             int gameLives = pD.getInt("data.gameLives");
             File gameMapsFolder = new File(Main.getInstance().getDataFolder(), "maps");
             GameMap gameMap = new LocalGameMap(gameMapsFolder, pD.getString("data.gameMap"), false);
-            Game game = new Game(gameName, material ,GameMode.NORMAL, gameMana, gameLives, gameMap);
-            if(pD.contains("data.p1Location") && pD.contains("data.p1Location")) {
-                Location p1Location = pD.getLocation("data.p1Location");
-                Location p2Location = pD.getLocation("data.p2Location");
-                game.setP1Location(p1Location);
-                game.setP2Location(p2Location);
-            }
+            Game game = new Game(gameName, material, GameMode.NORMAL, gameMana, gameLives, gameMap);
+            Location p1Location = new Location(Bukkit.getWorld("world"), pD.getInt("p1Spawn.x"), pD.getInt("p1Spawn.y"), pD.getInt("p1Spawn.z"));
+            Location p2Location = new Location(Bukkit.getWorld("world"), pD.getInt("p2Spawn.x"), pD.getInt("p2Spawn.y"), pD.getInt("p2Spawn.z"));
+            Location lobbySpawn = new Location(Bukkit.getWorld("world"), pD.getInt("lobby.x"), pD.getInt("lobby.y"), pD.getInt("lobby.z"));
+            game.setLobbySpawn(lobbySpawn);
+            game.setP1Location(p1Location);
+            game.setP2Location(p2Location);
             arrayList.add(game);
         }
         return arrayList;
@@ -61,7 +70,7 @@ public class GameData {
 
     public static Game getGame(String name) {
         Game getGame = null;
-        for(Game game : getAllSavedGames()) {
+        for (Game game : getAllSavedGames()) {
             if (game.getName().contains(name)) {
                 getGame = game;
             }
@@ -78,7 +87,6 @@ public class GameData {
             }
         }
     }
-
 
 
 }
