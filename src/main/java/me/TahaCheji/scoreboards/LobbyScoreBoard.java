@@ -11,13 +11,16 @@ import org.bukkit.scoreboard.*;
 
 public class LobbyScoreBoard {
 
-    public static void setLobbyScoreBoard(GamePlayer player) {
+   public int TaskId;
+   public Scoreboard board;
+
+    public void setLobbyScoreBoard(GamePlayer player) {
         Economy econ = Main.getEcon();
-        Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
-        Objective obj = board.registerNewObjective("BridgeWizzards", "dummy", ChatColor.GRAY + "♧" + ChatColor.GREEN + "BridgeWizzards" + ChatColor.GRAY + "♧");
+        board = Bukkit.getScoreboardManager().getNewScoreboard();
+        Objective obj = board.registerNewObjective("BridgeWizzards", "dummy", ChatColor.GRAY + "♧" + ChatColor.GOLD + "BridgeWizzards" + ChatColor.GRAY + "♧");
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
 
-        Score name = obj.getScore(ChatColor.GOLD + "=-=-=-=-BridgeWizzards=-=-=--=");
+        Score name = obj.getScore(ChatColor.GOLD + "=-=-=-=-=-=-=-=-=-=-=-=-=--=");
         name.setScore(16);
 
         Score emptyText1 = obj.getScore(" ");
@@ -25,7 +28,7 @@ public class LobbyScoreBoard {
 
         Team gameInfo = board.registerNewTeam("Coins");
         gameInfo.addEntry(ChatColor.BLACK + "" + ChatColor.BLACK);
-        gameInfo.setPrefix(ChatColor.GRAY + ">> " + ChatColor.GOLD + " Coins: " + econ.getBalance(player.getPlayer()));
+        gameInfo.setPrefix(ChatColor.GRAY + ">> " + ChatColor.GOLD + "Coins: " + econ.getBalance(player.getPlayer()));
         obj.getScore(ChatColor.BLACK + "" + ChatColor.BLACK).setScore(14);
 
         Score emptyText2 = obj.getScore("  ");
@@ -45,12 +48,28 @@ public class LobbyScoreBoard {
         player.getPlayer().setScoreboard(board);
     }
 
-    public static void updateScoreBoard(GamePlayer gamePlayer) {
-        Economy econ = Main.getEcon();
-        Player player = gamePlayer.getPlayer();
-        Scoreboard board = player.getPlayer().getScoreboard();
-        board.getTeam("Coins").setPrefix(ChatColor.GRAY + ">> " + ChatColor.GOLD + " Coins: " + econ.getBalance(player.getPlayer()));
-        board.getTeam("Online").setPrefix(ChatColor.GRAY + ">> " + ChatColor.GOLD + "OnlinePlayers: " + Bukkit.getOnlinePlayers().size());
+    public void updateScoreBoard(GamePlayer gamePlayer) {
+       TaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getInstance(), new Runnable() {
+            @Override
+            public void run() {
+                Economy econ = Main.getEcon();
+                Player player = gamePlayer.getPlayer();
+                if(!player.isOnline()) {
+                    stopUpdating();
+                    return;
+                }
+                Scoreboard newBoard = board;
+                newBoard.getTeam("Coins").setPrefix(ChatColor.GRAY + ">> " + ChatColor.GOLD + "Coins: " + econ.getBalance(player.getPlayer()));
+                newBoard.getTeam("Online").setPrefix(ChatColor.GRAY + ">> " + ChatColor.GOLD + "OnlinePlayers: " + Bukkit.getOnlinePlayers().size());
+            }
+        }, 0, 5);
     }
 
+    public void stopUpdating() {
+        Bukkit.getScheduler().cancelTask(TaskId);
+    }
+
+    public int getTaskId() {
+        return TaskId;
+    }
 }

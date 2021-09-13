@@ -5,6 +5,9 @@ import me.TahaCheji.commands.MainCommand;
 import me.TahaCheji.data.Game;
 import me.TahaCheji.data.GameData;
 import me.TahaCheji.data.GamePlayer;
+import me.TahaCheji.events.PlayerUseMasterItem;
+import me.TahaCheji.gameItems.GGun;
+import me.TahaCheji.itemData.MasterItems;
 import me.TahaCheji.util.Files;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -12,7 +15,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -27,9 +29,12 @@ public final class Main extends JavaPlugin {
     private static Main instance;
     private Set<Game> games = new HashSet<>();
     private Set<Game> activeGames = new HashSet<>();
-    private Map<Player, Game> playerGameMap = new HashMap<>();
+    public Map<Player, Game> playerGameMap = new HashMap<>();
     public static Set<GamePlayer> players = new HashSet<>();
     private static Economy econ = null;
+    public static Map<String, MasterItems> items = new HashMap();
+    public static Map<Integer, MasterItems> itemIDs = new HashMap();
+    public static List<MasterItems> allItems = new ArrayList<>();
 
     @Override
     public void onEnable() {
@@ -46,15 +51,15 @@ public final class Main extends JavaPlugin {
             }
         }
 
-        for(Game game : GameData.getAllSavedGames()) {
-            addGame(game);
-        }
-
         try {
             Files.initFiles();
         } catch (IOException | InvalidConfigurationException e2) {
             e2.printStackTrace();
         }
+
+            for (Game game : GameData.getAllSavedGames()) {
+                addGame(game);
+            }
 
         if (!setupEconomy()) {
             System.out.print("No econ plugin found.");
@@ -64,6 +69,7 @@ public final class Main extends JavaPlugin {
 
         getCommand("bzAdmin").setExecutor(new AdminCommand());
         getCommand("bz").setExecutor(new MainCommand());
+        registerItems();
     }
 
     @Override
@@ -73,6 +79,11 @@ public final class Main extends JavaPlugin {
         }
         System.out.println(ChatColor.RED + "Stopping: BridgeWizzards");
     }
+
+    public void registerItems() {
+        new GGun();
+    }
+
 
     public void addGame(Game game) {
         games.add(game);
@@ -121,6 +132,25 @@ public final class Main extends JavaPlugin {
         }
     }
 
+    public boolean isInGame(Player player) {
+        if(this.playerGameMap.containsKey(player)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public GamePlayer getPlayer(Player player) {
+        GamePlayer gPlayer = null;
+        for(GamePlayer gamePlayer : players) {
+            if(gamePlayer.getPlayer().getUniqueId().toString().contains(player.getUniqueId().toString())) {
+                gPlayer = gamePlayer;
+            }
+        }
+        return gPlayer;
+    }
+
+
     private Location lobbyPoint = null;
     public Location getLobbyPoint() {
         if (lobbyPoint == null) {
@@ -143,6 +173,22 @@ public final class Main extends JavaPlugin {
         }
 
         return lobbyPoint;
+    }
+
+    public static MasterItems getItem(String key) {
+        MasterItems item = (MasterItems) items.get(key);
+        return item == null ? (MasterItems) items.get("null") : item;
+    }
+
+    public static MasterItems getItemFromID(int id) {
+        MasterItems item = (MasterItems) itemIDs.get(id);
+
+        return item == null ? (MasterItems)items.get("null") : item;
+    }
+
+    public static void putItem(String name, MasterItems item) {
+            items.put(name, item);
+            itemIDs.put(item.getUUID(), item);
     }
 
     private boolean setupEconomy() {

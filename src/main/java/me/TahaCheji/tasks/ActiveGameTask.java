@@ -8,6 +8,7 @@ public class ActiveGameTask extends BukkitRunnable {
 
     private Game game;
     private int gameTimer = 300;
+    InGameScoreBoard gameScoreBoard = new InGameScoreBoard();
 
     public ActiveGameTask(Game game) {
         this.game = game;
@@ -18,10 +19,10 @@ public class ActiveGameTask extends BukkitRunnable {
         if(this.gameTimer <= 0) {
             this.cancel();
             game.stopGame();
+            gameScoreBoard.stopUpdating();
         } else {
             gameTimer --;
-
-            InGameScoreBoard.updateScoreBoard(game);
+            game.setGameTime(gameTimer);
         }
     }
 }

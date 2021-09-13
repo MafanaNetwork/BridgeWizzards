@@ -21,7 +21,6 @@ public class GameCountdownTask extends BukkitRunnable {
             cancel();
 
             new GameRunTask(game).runTaskTimer(Main.getInstance(), 0, 20);
-//            Skywars.getInstance().getServer().getScheduler().runTask(Skywars.getInstance(), new GameRunTask(game)); // Deprecated
         } else {
             if (time == 15 || time == 10 || time == 5) {
                 game.sendMessage("You'll be teleported to the game in " + time + " seconds");

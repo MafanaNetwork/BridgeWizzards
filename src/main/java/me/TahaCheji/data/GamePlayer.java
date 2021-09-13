@@ -11,7 +11,7 @@ public class GamePlayer {
     private Player player;
     private Game game;
     private int lives;
-    private double mana;
+    private double mana = 0;
     private double MAXMANA;
     private BukkitTask regen;
     private PlayerLocation playerLocation;
@@ -65,6 +65,10 @@ public class GamePlayer {
 
     public void setLives(int lives) {
         this.lives = lives;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
     }
 
     public void teleport(Location location) {

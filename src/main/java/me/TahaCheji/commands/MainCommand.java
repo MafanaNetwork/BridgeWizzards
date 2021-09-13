@@ -21,7 +21,17 @@ public class MainCommand implements CommandExecutor {
                     return true;
                 }
                 Game game = Main.getInstance().getGame(args[1]);
-                game.joinGame(new GamePlayer(player, game));
+                if(game == null) {
+                    player.sendMessage("That game does not exist");
+                    return true;
+                }
+                if(game.isState(Game.GameState.ACTIVE)) {
+                    player.sendMessage("That game is active");
+                    return true;
+                }
+                GamePlayer gamePlayer = Main.getInstance().getPlayer(player);
+                gamePlayer.setGame(game);
+                game.joinGame(gamePlayer);
             }
         }
         return false;
