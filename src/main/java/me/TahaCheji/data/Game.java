@@ -104,17 +104,20 @@ public class Game {
         if (!Main.getInstance().isInGame(player)) {
             return;
         }
-        stopGame();
-        getPlayers().remove(gamePlayer);
-        setWinner(getPlayers().get(0), this);
+        if(getPlayers().size() == 1) {
+            stopGame();
+        } else {
+            getPlayers().remove(gamePlayer);
+            if(getGameState() == GameState.ACTIVE) {
+                setWinner(getPlayers().get(0), this);
+            }
+        }
 
     }
 
     public void stopGame() {
         map.unload();
-        Main.getInstance().removeActiveGame(this);
         inGameScoreBoard.stopUpdating();
-        resetGameInfo();
         p1.getPlayer().sendMessage("Game has ended");
         p1.getPlayer().teleport(Main.getInstance().getLobbyPoint());
         p1.getPlayer().getPlayer().getInventory().clear();
@@ -133,6 +136,7 @@ public class Game {
         Main.getInstance().playerGameMap.remove(p2.getPlayer(), this);
         lobbyScoreBoard.setLobbyScoreBoard(p2);
         lobbyScoreBoard.updateScoreBoard(p2);
+        resetGameInfo();
     }
 
     public void resetGameInfo() {
@@ -140,6 +144,8 @@ public class Game {
         p2 = null;
         getPlayers().clear();
         gameTime = 300;
+        Main.getInstance().removeActiveGame(this);
+        setState(GameState.LOBBY);
     }
 
     public void setWinner(GamePlayer winner, Game game) {

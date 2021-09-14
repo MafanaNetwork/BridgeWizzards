@@ -1,6 +1,5 @@
 package me.TahaCheji.events;
 
-import de.tr7zw.nbtapi.NBTItem;
 import me.TahaCheji.Main;
 import me.TahaCheji.data.GamePlayer;
 import me.TahaCheji.itemData.MasterItems;
@@ -29,8 +28,13 @@ public class PlayerUseMasterItem implements Listener {
             priority = EventPriority.HIGH
     )
     private void onPlayerUse(PlayerInteractEvent event) {
-        if (ItemUtil.isMasterItem(event.getPlayer().getInventory().getItemInMainHand())) {
-            this.useUberItem(event, event.getPlayer().getInventory().getItemInMainHand());
+        GamePlayer gamePlayer = Main.getInstance().getPlayer(event.getPlayer());
+        if(Main.getInstance().isInGame(gamePlayer.getPlayer()) || gamePlayer.getPlayer().isOp()) {
+            if (ItemUtil.isMasterItem(event.getPlayer().getInventory().getItemInMainHand())) {
+                this.useUberItem(event, event.getPlayer().getInventory().getItemInMainHand());
+            }
+        } else {
+            gamePlayer.getPlayer().sendMessage("You Cannot use this item out side of the game.");
         }
     }
 

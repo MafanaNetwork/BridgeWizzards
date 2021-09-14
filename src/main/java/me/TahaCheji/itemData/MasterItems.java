@@ -1,6 +1,5 @@
 package me.TahaCheji.itemData;
 
-import de.tr7zw.nbtapi.NBTItem;
 import me.TahaCheji.Main;
 import me.TahaCheji.util.ItemUtil;
 import me.TahaCheji.util.NBTUtils;

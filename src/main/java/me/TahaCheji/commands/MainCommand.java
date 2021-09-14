@@ -33,6 +33,14 @@ public class MainCommand implements CommandExecutor {
                 gamePlayer.setGame(game);
                 game.joinGame(gamePlayer);
             }
+             if(args[1].equalsIgnoreCase("leave")) {
+                 if(!Main.getInstance().isInGame(player)) {
+                     player.sendMessage("You are not in a game");
+                     return true;
+                 }
+                 Game game = Main.getInstance().getGame(player);
+                 game.leaveGame(Main.getInstance().getPlayer(player));
+             }
         }
         return false;
     }

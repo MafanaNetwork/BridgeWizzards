@@ -6,6 +6,7 @@ import me.TahaCheji.data.GameData;
 import me.TahaCheji.data.GameMode;
 import me.TahaCheji.data.GamePlayer;
 import me.TahaCheji.gameItems.GGun;
+import me.TahaCheji.itemData.ItemGui;
 import me.TahaCheji.mapUtil.GameMap;
 import me.TahaCheji.mapUtil.LocalGameMap;
 import org.bukkit.*;
@@ -45,10 +46,18 @@ public class AdminCommand implements CommandExecutor {
                 if(args[1].equalsIgnoreCase("Mana")) {
                     GamePlayer gamePlayer = Main.getInstance().getPlayer(player);
                     gamePlayer.setMana(Integer.parseInt(args[2]));
+                    gamePlayer.getPlayer().sendMessage(ChatColor.GOLD + "You set your mana as " + args[2]);
+                }
+                if(args[1].equalsIgnoreCase("Lives")) {
+                    GamePlayer gamePlayer = Main.getInstance().getPlayer(player);
+                    gamePlayer.setLives(Integer.parseInt(args[2]));
+                    gamePlayer.getPlayer().sendMessage(ChatColor.GOLD + "You set your lives as " + args[2]);
                 }
             }
             if(args[0].equalsIgnoreCase("give")) {
-                player.getInventory().addItem(new GGun().getItem());
+                if(args[1].equalsIgnoreCase("Items")) {
+                    new ItemGui().getAllItemsGui().open(player);
+                }
                 return true;
             }
             if(args[0].equalsIgnoreCase("active")) {
