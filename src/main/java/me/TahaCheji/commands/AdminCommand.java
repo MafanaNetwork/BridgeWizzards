@@ -1,6 +1,7 @@
 package me.TahaCheji.commands;
 
 import me.TahaCheji.Main;
+import me.TahaCheji.data.ActiveGameGui;
 import me.TahaCheji.data.Game;
 import me.TahaCheji.data.GameMode;
 import me.TahaCheji.data.GamePlayer;
@@ -59,10 +60,7 @@ public class AdminCommand implements CommandExecutor {
                 return true;
             }
             if(args[0].equalsIgnoreCase("active")) {
-                //open up a score board for the active games
-                if(args[1].equalsIgnoreCase("silent")) {
-                    //every time you join the active game the players wont know
-                }
+                new ActiveGameGui().getGameGui().open(player);
             }
             if(args[0].equalsIgnoreCase("troll")) {
                 Player trollingPlayer = Bukkit.getPlayer(args[1]);

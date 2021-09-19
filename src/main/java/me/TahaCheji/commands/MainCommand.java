@@ -3,6 +3,7 @@ package me.TahaCheji.commands;
 import me.TahaCheji.Main;
 import me.TahaCheji.data.Game;
 import me.TahaCheji.data.GameData;
+import me.TahaCheji.data.GameGui;
 import me.TahaCheji.data.GamePlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -15,14 +16,13 @@ public class MainCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if(label.equalsIgnoreCase("bz")) {
             Player player = (Player) sender;
-            if(args.length == 0) {
-                player.sendMessage(ChatColor.RED + "Error: /bz join [GameName] | /bz leave");
-                return true;
-            }
              if(args[0].equalsIgnoreCase("join")) {
-                Game game = Main.getInstance().getGame(args[1]);
+                if(args.length == 1) {
+                    new GameGui().getGameGui().open(player);
+                    return true;
+                }
+                 Game game = Main.getInstance().getGame(args[1]);
                 if(game == null) {
-                    player.sendMessage("That game does not exist");
                     return true;
                 }
                 if(game.isState(Game.GameState.ACTIVE)) {
@@ -37,6 +37,11 @@ public class MainCommand implements CommandExecutor {
                  if(Main.getInstance().isInGame(player)) {
                      Game game = Main.getInstance().getGame(player);
                      game.leaveGame(Main.getInstance().getPlayer(player));
+                     return true;
+                 }
+                 if(player.isOp()) {
+                     Game game = Main.getInstance().getGame(player);
+                     game.leaveAdmin(Main.getInstance().getPlayer(player));
                  }
              }
         }

@@ -178,6 +178,22 @@ public class Game {
         return null;
     }
 
+    public void joinAdmin (GamePlayer gamePlayer) {
+        for (Player online : Bukkit.getOnlinePlayers())
+            online.hidePlayer(gamePlayer.getPlayer());
+        gamePlayer.teleport(lobbySpawn);
+        gamePlayer.getPlayer().setGameMode(org.bukkit.GameMode.CREATIVE);
+        Main.getInstance().playerGameMap.put(p1.getPlayer(), this);
+    }
+
+    public void leaveAdmin (GamePlayer gamePlayer) {
+        for (Player online : Bukkit.getOnlinePlayers())
+            online.showPlayer(gamePlayer.getPlayer());
+        gamePlayer.teleport(Main.getInstance().getLobbyPoint());
+        gamePlayer.getPlayer().setGameMode(org.bukkit.GameMode.SURVIVAL);
+        Main.getInstance().playerGameMap.remove(p1.getPlayer(), this);
+    }
+
     public void startCountdown() {
         new GameCountdownTask(this).runTaskTimer(Main.getInstance(), 0, 20);
     }

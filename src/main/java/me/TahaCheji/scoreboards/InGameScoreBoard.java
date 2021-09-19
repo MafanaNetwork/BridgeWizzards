@@ -22,7 +22,7 @@ public class InGameScoreBoard {
         Objective obj = board.registerNewObjective("BridgeWizzards", "dummy", ChatColor.GRAY + "♧" + ChatColor.GOLD + "BridgeWizzards" + ChatColor.GRAY + "♧");
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
 
-        Score name = obj.getScore(ChatColor.GOLD + "=-=-=-=-=BridgeWizzards=-=-=-=--=");
+        Score name = obj.getScore(ChatColor.GOLD + "=-=-=-=-=-BridgeWizzards-=-=-=-=-=");
         name.setScore(16);
 
         Score emptyText1 = obj.getScore(" ");

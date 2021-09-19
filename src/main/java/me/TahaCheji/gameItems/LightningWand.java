@@ -23,7 +23,7 @@ public class LightningWand extends MasterItems {
 
 
     public LightningWand() {
-        super("LightningWand", Material.BONE, ItemType.WAND, RarityType.GOLD, true, new MasterAbility("Sparkle", AbilityType.RIGHT_CLICK, 65, 5), false, "I STRIKE AGAIN MUAHAHAHA");
+        super("LightningWand", Material.BONE, ItemType.WAND, RarityType.GOLD, true, new MasterAbility("Sparkle", AbilityType.RIGHT_CLICK, 75, 5), false, "I STRIKE AGAIN MUAHAHAHA");
     }
 
     @Override

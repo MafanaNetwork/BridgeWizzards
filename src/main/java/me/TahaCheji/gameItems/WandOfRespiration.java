@@ -28,7 +28,7 @@ public class WandOfRespiration extends MasterItems {
 
 
     public WandOfRespiration() {
-        super("WandOfRespiration", Material.STICK, ItemType.STAFF, RarityType.REDSTONE, true, new MasterAbility("Celestial Damage", AbilityType.RIGHT_CLICK, 25, 2), false, "The magic comes from you.");
+        super("WandOfRespiration", Material.STICK, ItemType.STAFF, RarityType.REDSTONE, true, new MasterAbility("Celestial Damage", AbilityType.RIGHT_CLICK, 55, 2), false, "The magic comes from you.");
     }
 
     @Override

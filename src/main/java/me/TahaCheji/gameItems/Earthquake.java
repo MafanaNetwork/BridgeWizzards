@@ -72,7 +72,7 @@ public class Earthquake extends MasterItems {
                 ParticleEffect.CLOUD.display(loc, .5f, 0, .5f, 0, 5, null, Bukkit.getOnlinePlayers());
                 loc.getWorld().playSound(loc, Sound.BLOCK_GRAVEL_BREAK, 2, 1);
                 for (Entity target : loc.getNearbyEntities(3, 3, 3))
-                    if (loc.distanceSquared(target.getLocation()) < 2 && !hit.contains(target.getEntityId()) && !target.equals(player)) {
+                    if (loc.distanceSquared(target.getLocation()) < 2 && !hit.contains(target.getEntityId()) && !target.equals(player) && target instanceof LivingEntity) {
                         hit.add(target.getEntityId());
                         new DamageManager(player, (LivingEntity) target, getMasterAbility()).damage();
                         ((LivingEntity) target).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (int) (5 * 20), (int) 5));

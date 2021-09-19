@@ -32,6 +32,9 @@ public class DamageManager implements Listener {
     }
 
     public void damage () {
+        if(target instanceof ArmorStand) {
+            return;
+        }
         int damage = ability.getAbilityDamage();
         if(target.getHealth() <= damage && target instanceof Player) {
             Game game = Main.getInstance().getGame((Player) target);

@@ -1,11 +1,10 @@
-package me.TahaCheji.itemData;
+package me.TahaCheji.data;
 
 import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.GuiItem;
 import dev.triumphteam.gui.guis.PaginatedGui;
 import me.TahaCheji.Main;
-import me.TahaCheji.util.ItemUtil;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -13,26 +12,27 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemGui implements Listener {
+public class ActiveGameGui implements Listener {
 
 
-    public PaginatedGui getAllItemsGui() {
+
+
+    public PaginatedGui getGameGui() {
         PaginatedGui gui = Gui.paginated()
-                .title(Component.text(ChatColor.GOLD + "All Game Items"))
+                .title(Component.text(ChatColor.GOLD + "Active Game"))
                 .rows(6)
                 .pageSize(54)
                 .disableAllInteractions()
                 .create();
 
         List<String> lore = new ArrayList<>();
-        ItemStack greystainedglass = new ItemStack(Material.ORANGE_STAINED_GLASS_PANE);
+        ItemStack greystainedglass = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         ItemMeta newmeta = greystainedglass.getItemMeta();
         newmeta.setDisplayName(ChatColor.GRAY + " ");
         newmeta.setLore(lore);
@@ -67,15 +67,13 @@ public class ItemGui implements Listener {
         gui.setItem(6, 3, ItemBuilder.from(Material.PAPER).setName(ChatColor.DARK_GRAY + "Previous").asGuiItem(event -> gui.previous()));
         gui.setItem(6, 7, ItemBuilder.from(Material.PAPER).setName(ChatColor.DARK_GRAY + "Next").asGuiItem(event -> gui.next()));
 
-        for(MasterItems masterItems : Main.allItems) {
-            ItemStack itemStack = masterItems.getItem();
+        for(Game game : Main.getInstance().getActiveGames()) {
+            ItemStack itemStack = game.getGameIcon();
             ItemMeta itemMeta = itemStack.getItemMeta();
+            itemMeta.setDisplayName(ChatColor.GOLD + game.getName());
             List<String> itemLore = new ArrayList<>();
-            for(String string : itemMeta.getLore()) {
-                itemLore.add(string);
-            }
             itemLore.add("");
-            itemLore.add(ChatColor.GOLD + "Click To Get This Item");
+            itemLore.add(ChatColor.GOLD + "Click To Join The Active Game");
             itemMeta.setLore(itemLore);
             itemStack.setItemMeta(itemMeta);
             gui.addItem(new GuiItem(itemStack));
@@ -83,9 +81,10 @@ public class ItemGui implements Listener {
         return gui;
     }
 
+
     @EventHandler
-    public void onItemClick(InventoryClickEvent event) {
-        if(!event.getView().getTitle().contains("All Game Items")) {
+    public void onClick(InventoryClickEvent event) {
+        if(!event.getView().getTitle().contains("Active Game")) {
             return;
         }
         event.setCancelled(true);
@@ -95,18 +94,19 @@ public class ItemGui implements Listener {
         if(event.getCurrentItem().getItemMeta() == null) {
             return;
         }
-        if(event.getCurrentItem().getType() == Material.GRAY_STAINED_GLASS_PANE || event.getCurrentItem().getType() == Material.PAPER) {
+        if(event.getCurrentItem().getType() == Material.BLACK_STAINED_GLASS_PANE || event.getCurrentItem().getType() == Material.PAPER) {
             return;
         }
         Player player = (Player) event.getWhoClicked();
-        MasterItems masterItems = ItemUtil.getMasterItem(event.getCurrentItem());
-        if(masterItems == null) {
+        GamePlayer gamePlayer = Main.getInstance().getPlayer(player);
+        Game game = Main.getInstance().getGame(event.getCurrentItem().getItemMeta().getDisplayName());
+        if(game == null) {
             return;
         }
-        player.getInventory().addItem(masterItems.getItem());
+        gamePlayer.setGame(game);
+        game.joinAdmin(gamePlayer);
 
     }
-
 
 
 }

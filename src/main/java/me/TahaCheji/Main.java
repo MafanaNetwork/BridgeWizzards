@@ -105,6 +105,14 @@ public final class Main extends JavaPlugin {
         }
     }
 
+    public Set<Game> getGames() {
+        return games;
+    }
+
+    public Set<Game> getActiveGames() {
+        return activeGames;
+    }
+
     public Game getActiveGame(String name) {
         Game game = GameData.getGame(name);
         if(activeGames.contains(game)) {

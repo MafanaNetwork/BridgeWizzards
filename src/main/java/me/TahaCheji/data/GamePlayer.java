@@ -92,6 +92,10 @@ public class GamePlayer {
         }.runTaskTimer(Main.getInstance(), 0L, 20L);
     }
 
+    public BukkitTask getRegen() {
+        return regen;
+    }
+
     public String getName() {
             return player.getDisplayName();
     }

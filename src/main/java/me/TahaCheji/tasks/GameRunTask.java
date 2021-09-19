@@ -97,7 +97,12 @@ public class GameRunTask extends BukkitRunnable {
                 gamePlayer.setPlayerLocation(PlayerLocation.GAME);
                 gamePlayer.getPlayer().setGameMode(GameMode.SURVIVAL);
                 ItemStack gappls = new Gapple().getItem();
-                gappls.setAmount(3);
+                gappls.setAmount(4);
+
+                ItemStack shadow = new ShadowWarp().getItem();
+                shadow.setAmount(2);
+
+
                 Player player = gamePlayer.getPlayer();
 
                 player.getInventory().setArmorContents(null);
@@ -113,7 +118,7 @@ public class GameRunTask extends BukkitRunnable {
                 player.getInventory().setItem(4, blocks);
                 player.getInventory().setItem(5, pickaxe);
                 player.getInventory().setItem(6, gappls);
-                player.getInventory().setItem(7, new ShadowWarp().getItem());
+                player.getInventory().setItem(7, shadow);
                 player.getInventory().setItem(8, new Earthquake().getItem());
                 player.updateInventory();
             }
