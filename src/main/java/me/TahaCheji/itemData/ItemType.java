@@ -11,6 +11,8 @@ public enum ItemType {
     CHESTPLATE("Chestplate"),
     HELMET("Helmet"),
     SPELL("Spell"),
+    STAFF("Staff"),
+    WAND("Wand"),
     MATERIAL( "Material");
 
 

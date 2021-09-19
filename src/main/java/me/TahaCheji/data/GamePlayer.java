@@ -8,7 +8,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 public class GamePlayer {
 
-    private Player player;
+    private final Player player;
     private Game game;
     private int lives;
     private double mana = 0;

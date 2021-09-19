@@ -1,10 +1,12 @@
 package me.TahaCheji.itemData;
 
 import dev.triumphteam.gui.builder.item.ItemBuilder;
+import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.GuiItem;
 import dev.triumphteam.gui.guis.PaginatedGui;
 import me.TahaCheji.Main;
 import me.TahaCheji.util.ItemUtil;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -22,7 +24,12 @@ public class ItemGui implements Listener {
 
 
     public PaginatedGui getAllItemsGui() {
-        PaginatedGui gui = new PaginatedGui(6, 54, "All Game Items");
+        PaginatedGui gui = Gui.paginated()
+                .title(Component.text(ChatColor.GOLD + "All Game Items"))
+                .rows(6)
+                .pageSize(54)
+                .disableAllInteractions()
+                .create();
 
         List<String> lore = new ArrayList<>();
         ItemStack greystainedglass = new ItemStack(Material.ORANGE_STAINED_GLASS_PANE);
@@ -88,7 +95,7 @@ public class ItemGui implements Listener {
         if(event.getCurrentItem().getItemMeta() == null) {
             return;
         }
-        if(event.getCurrentItem().getType() == Material.ORANGE_STAINED_GLASS_PANE || event.getCurrentItem().getType() == Material.PAPER) {
+        if(event.getCurrentItem().getType() == Material.GRAY_STAINED_GLASS_PANE || event.getCurrentItem().getType() == Material.PAPER) {
             return;
         }
         Player player = (Player) event.getWhoClicked();

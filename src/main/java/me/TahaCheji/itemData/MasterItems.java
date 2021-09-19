@@ -47,8 +47,6 @@ public abstract class MasterItems {
         this.lore = Arrays.asList(lore);
         this.UUID = ItemUtil.stringToSeed(itemMaterial.name() + name + rarityType.toString());
         this.oneTimeUse = oneTimeUse;
-        Main.allItems.add(this);
-        Main.putItem(name, this);
     }
 
     public MasterItems(String name, Material itemMaterial, ItemType itemType, RarityType rarityType, boolean glow, String... lore) {
@@ -127,6 +125,13 @@ public abstract class MasterItems {
         }
 
     }
+
+    public void registerItem() {
+        Main.allItems.add(this);
+        Main.putItem(name, this);
+        System.out.println("Registered " + name);
+    }
+
 
     public abstract void onItemStackCreate(ItemStack var1);
 

@@ -31,7 +31,7 @@ public class PlayerUseMasterItem implements Listener {
         GamePlayer gamePlayer = Main.getInstance().getPlayer(event.getPlayer());
         if(Main.getInstance().isInGame(gamePlayer.getPlayer()) || gamePlayer.getPlayer().isOp()) {
             if (ItemUtil.isMasterItem(event.getPlayer().getInventory().getItemInMainHand())) {
-                this.useUberItem(event, event.getPlayer().getInventory().getItemInMainHand());
+                this.useMasterItem(event, event.getPlayer().getInventory().getItemInMainHand());
             }
         } else {
             gamePlayer.getPlayer().sendMessage("You Cannot use this item out side of the game.");
@@ -87,12 +87,11 @@ public class PlayerUseMasterItem implements Listener {
         }
 
 
-    private void useUberItem(PlayerInteractEvent event, ItemStack item) {
+    private void useMasterItem(PlayerInteractEvent event, ItemStack item) {
         Player player = event.getPlayer();
         MasterItems uber = ItemUtil.getMasterItem(item);
         if (uber != null) {
                 if (event.getAction() == Action.LEFT_CLICK_AIR) {
-
                     if (!player.isSneaking()) {
                         if (uber.leftClickAirAction(player, item)) {
                             uber.onItemUse(player, item);

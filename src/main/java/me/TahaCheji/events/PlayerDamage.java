@@ -21,6 +21,9 @@ public class PlayerDamage implements Listener {
 
         Player player = (Player) e.getEntity();
         Game game = Main.getInstance().getGame(player);
+        if(e.getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION || e.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
+            e.setCancelled(true);
+        }
         if (game != null) {
             if (game.isState(Game.GameState.LOBBY) || game.isState(Game.GameState.STARTING) || game.isState(Game.GameState.PREPARATION) || game.isState(Game.GameState.ENDING) || e.getCause() == EntityDamageEvent.DamageCause.FALL) {
                 e.setCancelled(true);

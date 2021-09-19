@@ -27,8 +27,9 @@ public class MasterAbility {
         List<String> lore = new ArrayList();
         lore.add(ChatColor.GOLD + "Item Ability: " + this.name + " " + ChatColor.GOLD + ChatColor.DARK_GREEN + "[" +  this.type.getText() + "]");
         lore.add(ChatColor.RED + "Ability Damage: " + abilityDamage + ChatColor.DARK_GRAY + " | " + ChatColor.AQUA + "ManaCost: " + manaCost);
+        lore.add("");
         for(String string : description) {
-            lore.add(ChatColor.GRAY + string);
+            lore.add(ChatColor.DARK_GRAY + string);
         }
         return lore;
     }

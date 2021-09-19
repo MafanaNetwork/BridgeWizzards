@@ -1,7 +1,6 @@
 package me.TahaCheji.data;
 
 import me.TahaCheji.Main;
-import me.TahaCheji.gameItems.GGun;
 import me.TahaCheji.mapUtil.GameMap;
 import me.TahaCheji.scoreboards.InGameScoreBoard;
 import me.TahaCheji.scoreboards.LobbyScoreBoard;
@@ -104,39 +103,53 @@ public class Game {
         if (!Main.getInstance().isInGame(player)) {
             return;
         }
-        if(getPlayers().size() == 1) {
-            stopGame();
-        } else {
+        if (isState(GameState.ACTIVE)) {
             getPlayers().remove(gamePlayer);
-            if(getGameState() == GameState.ACTIVE) {
-                setWinner(getPlayers().get(0), this);
-            }
+            setWinner(getPlayers().get(0), this);
         }
+        stopGame();
 
     }
 
     public void stopGame() {
         map.unload();
-        inGameScoreBoard.stopUpdating();
-        p1.getPlayer().sendMessage("Game has ended");
-        p1.getPlayer().teleport(Main.getInstance().getLobbyPoint());
-        p1.getPlayer().getPlayer().getInventory().clear();
-        p1.getPlayer().getPlayer().getInventory().setArmorContents(null);
-        p1.setPlayerLocation(PlayerLocation.LOBBY);
-        Main.getInstance().playerGameMap.remove(p1.getPlayer(), this);
-        LobbyScoreBoard lobbyScoreBoard = new LobbyScoreBoard();
-        lobbyScoreBoard.setLobbyScoreBoard(p1);
-        lobbyScoreBoard.updateScoreBoard(p1);
-
-        p2.getPlayer().sendMessage("Game has ended");
-        p2.getPlayer().teleport(Main.getInstance().getLobbyPoint());
-        p2.getPlayer().getPlayer().getInventory().clear();
-        p2.getPlayer().getPlayer().getInventory().setArmorContents(null);
-        p2.setPlayerLocation(PlayerLocation.LOBBY);
-        Main.getInstance().playerGameMap.remove(p2.getPlayer(), this);
-        lobbyScoreBoard.setLobbyScoreBoard(p2);
-        lobbyScoreBoard.updateScoreBoard(p2);
+        if (inGameScoreBoard != null) {
+            inGameScoreBoard.stopUpdating();
+        }
+        if (p1 != null) {
+            p1.getPlayer().sendMessage("Game has ended");
+            p1.getPlayer().teleport(Main.getInstance().getLobbyPoint());
+            p1.getPlayer().getPlayer().getInventory().clear();
+            p1.getPlayer().getPlayer().getInventory().setArmorContents(null);
+            p1.setPlayerLocation(PlayerLocation.LOBBY);
+            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Main.getInstance(), new Runnable() {
+                public void run() {
+                    p1.getPlayer().setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+                }
+            }, 20L);
+            Main.getInstance().playerGameMap.remove(p1.getPlayer(), this);
+            LobbyScoreBoard lobbyScoreBoard = new LobbyScoreBoard();
+            lobbyScoreBoard.setLobbyScoreBoard(p1);
+            lobbyScoreBoard.updateScoreBoard(p1);
+        }
+        if (p2 != null) {
+            p2.getPlayer().sendMessage("Game has ended");
+            p2.getPlayer().teleport(Main.getInstance().getLobbyPoint());
+            p2.getPlayer().getPlayer().getInventory().clear();
+            p2.getPlayer().getPlayer().getInventory().setArmorContents(null);
+            p2.setPlayerLocation(PlayerLocation.LOBBY);
+            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Main.getInstance(), new Runnable() {
+                public void run() {
+                    p2.getPlayer().setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+                }
+            }, 20L);
+            Main.getInstance().playerGameMap.remove(p2.getPlayer(), this);
+            LobbyScoreBoard lobbyScoreBoard = new LobbyScoreBoard();
+            lobbyScoreBoard.setLobbyScoreBoard(p2);
+            lobbyScoreBoard.updateScoreBoard(p2);
+        }
         resetGameInfo();
+        Main.getInstance().removeActiveGame(this);
     }
 
     public void resetGameInfo() {
@@ -144,8 +157,7 @@ public class Game {
         p2 = null;
         getPlayers().clear();
         gameTime = 300;
-        Main.getInstance().removeActiveGame(this);
-        setState(GameState.LOBBY);
+        inGameScoreBoard = null;
     }
 
     public void setWinner(GamePlayer winner, Game game) {

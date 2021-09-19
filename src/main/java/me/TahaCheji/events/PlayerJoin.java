@@ -3,6 +3,7 @@ package me.TahaCheji.events;
 import me.TahaCheji.Main;
 import me.TahaCheji.data.GamePlayer;
 import me.TahaCheji.data.PlayerLocation;
+import me.TahaCheji.gameItems.WandOfRespiration;
 import me.TahaCheji.scoreboards.LobbyScoreBoard;
 import org.bukkit.GameMode;
 import org.bukkit.event.EventHandler;
@@ -11,7 +12,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 public class PlayerJoin implements Listener {
 
-    int taskID;
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {

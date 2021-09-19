@@ -5,10 +5,9 @@ import me.TahaCheji.commands.MainCommand;
 import me.TahaCheji.data.Game;
 import me.TahaCheji.data.GameData;
 import me.TahaCheji.data.GamePlayer;
-import me.TahaCheji.events.PlayerUseMasterItem;
-import me.TahaCheji.gameItems.GGun;
 import me.TahaCheji.itemData.MasterItems;
 import me.TahaCheji.util.Files;
+import me.TahaCheji.util.ServerVersion;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -27,6 +26,7 @@ import java.util.*;
 public final class Main extends JavaPlugin {
 
     private static Main instance;
+    private ServerVersion version;
     private Set<Game> games = new HashSet<>();
     private Set<Game> activeGames = new HashSet<>();
     public Map<Player, Game> playerGameMap = new HashMap<>();
@@ -40,12 +40,21 @@ public final class Main extends JavaPlugin {
     public void onEnable() {
         System.out.println(ChatColor.GREEN + "Starting: BridgeWizzards");
         instance = this;
-
+        version = new ServerVersion(Bukkit.getServer().getClass());
         String packageName = getClass().getPackage().getName();
         for (Class<?> clazz : new Reflections(packageName, ".listeners").getSubTypesOf(Listener.class)) {
             try {
                 Listener listener = (Listener) clazz.getDeclaredConstructor().newInstance();
                 getServer().getPluginManager().registerEvents(listener, this);
+            } catch (InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+        }
+
+        for(Class<?> clazz : new Reflections(packageName).getSubTypesOf(MasterItems.class)) {
+            try {
+                MasterItems masterItems = (MasterItems) clazz.getDeclaredConstructor().newInstance();
+                masterItems.registerItem();
             } catch (InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodException e) {
                 e.printStackTrace();
             }
@@ -69,7 +78,6 @@ public final class Main extends JavaPlugin {
 
         getCommand("bzAdmin").setExecutor(new AdminCommand());
         getCommand("bz").setExecutor(new MainCommand());
-        registerItems();
     }
 
     @Override
@@ -78,10 +86,6 @@ public final class Main extends JavaPlugin {
             game.stopGame();
         }
         System.out.println(ChatColor.RED + "Stopping: BridgeWizzards");
-    }
-
-    public void registerItems() {
-        new GGun();
     }
 
 
@@ -175,10 +179,6 @@ public final class Main extends JavaPlugin {
         return lobbyPoint;
     }
 
-    public static MasterItems getItem(String key) {
-        MasterItems item = (MasterItems) items.get(key);
-        return item == null ? (MasterItems) items.get("null") : item;
-    }
 
     public static MasterItems getItemFromID(int id) {
         MasterItems item = (MasterItems) itemIDs.get(id);
@@ -201,6 +201,11 @@ public final class Main extends JavaPlugin {
         }
         econ = rsp.getProvider();
         return econ != null;
+    }
+
+
+    public ServerVersion getVersion() {
+        return version;
     }
 
     public static Economy getEcon() {

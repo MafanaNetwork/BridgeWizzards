@@ -1,11 +1,12 @@
 package me.TahaCheji.events;
 
-import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import me.TahaCheji.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -18,13 +19,16 @@ import org.bukkit.inventory.ItemStack;
 public class PlayerAbilityDamage implements Listener {
 
 
-    @EventHandler
+
     public void onDamageHit(EntityDamageByEntityEvent e) {
         if(!(e.getDamager() instanceof Projectile)) {
             e.setCancelled(true);
             return;
         }
         Projectile projectile = (Projectile) e.getDamager();
+        if(!(projectile.getShooter() instanceof Player)) {
+            return;
+        }
         Player player = (Player) projectile.getShooter();
         if(player == null) {
             return;
@@ -35,20 +39,29 @@ public class PlayerAbilityDamage implements Listener {
             return;
         }
         if(new NBTItem(item).getBoolean("hasAbility")) {
-            int damage = new NBTItem(item).getInteger("AbilityDamage") / 5;
+            int damage = new NBTItem(item).getInteger("AbilityDamage");
             e.setDamage(damage);
-            com.gmail.filoghost.holographicdisplays.api.Hologram h = (com.gmail.filoghost.holographicdisplays.api.Hologram) HologramsAPI.createHologram
-                    (Main.getInstance(), e.getEntity().getLocation().add(getRandomOffset(), 2, getRandomOffset())).appendTextLine(ChatColor.DARK_PURPLE + "✧" + damage + "✧" );
-
-            Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
-                h.delete();
-            }, 20); // Time in ticks (20 ticks = 1 second)
+            Location loc = e.getEntity().getLocation().clone().add(getRandomOffset(), 1, getRandomOffset());
+            player.getWorld().spawn(loc, ArmorStand.class, armorStand -> {
+                armorStand.setMarker(true);
+                armorStand.setVisible(false);
+                armorStand.setGravity(false);
+                armorStand.setSmall(true);
+                armorStand.setCustomNameVisible(true);
+                armorStand.setCustomName(ChatColor.DARK_PURPLE + "✧" + damage);
+                Bukkit.getScheduler().runTaskLater(Main.getInstance(), armorStand::remove, 20); // Time in ticks (20 ticks = 1 second)
+            });
         } else {
-            com.gmail.filoghost.holographicdisplays.api.Hologram h = (com.gmail.filoghost.holographicdisplays.api.Hologram) HologramsAPI.createHologram
-                    (Main.getInstance(), e.getEntity().getLocation().add(getRandomOffset(), 2, getRandomOffset())).appendTextLine(ChatColor.RED + "" + e.getDamage()  );
-            Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
-                h.delete();
-            }, 20); // Time in ticks (20 ticks = 1 second)
+            Location loc = e.getEntity().getLocation().clone().add(getRandomOffset(), 1, getRandomOffset());
+            player.getWorld().spawn(loc, ArmorStand.class, armorStand -> {
+                armorStand.setMarker(true);
+                armorStand.setVisible(false);
+                armorStand.setGravity(false);
+                armorStand.setSmall(true);
+                armorStand.setCustomNameVisible(true);
+                armorStand.setCustomName(ChatColor.RED + "*" + e.getDamage());
+                Bukkit.getScheduler().runTaskLater(Main.getInstance(), armorStand::remove, 20); // Time in ticks (20 ticks = 1 second)
+            });
         }
     }
 

@@ -3,28 +3,31 @@ package me.TahaCheji.gameItems;
 import me.TahaCheji.Main;
 import me.TahaCheji.data.GamePlayer;
 import me.TahaCheji.itemData.*;
+import me.TahaCheji.util.AbilityUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import xyz.xenondevs.particle.ParticleEffect;
 
-public class GGun extends MasterItems {
+public class Gapple extends MasterItems {
 
-    public GGun() {
-        super("GGun", Material.STONE_SWORD, ItemType.SWORD, RarityType.DIAMOND, true, new MasterAbility("WoundKill", AbilityType.RIGHT_CLICK, 5, 10, "Shoots a arrow dealing 10 Damage"), false, "Test Item");
+
+    public Gapple() {
+        super("Gapple", Material.YELLOW_DYE, ItemType.SPELL, RarityType.GOLD, true, new MasterAbility("Heal", AbilityType.RIGHT_CLICK, 50, 0), true, "");
     }
 
     @Override
     public void onItemStackCreate(ItemStack var1) {
+
     }
 
     @Override
@@ -43,11 +46,14 @@ public class GGun extends MasterItems {
         if(!(gamePlayer.getMana() > getMasterAbility().getManaCost())) {
             player.sendMessage(ChatColor.RED + "You do not have the mana to use this ability");
             player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_HURT, 10, 1);
-        } else {
-            gamePlayer.setMana(gamePlayer.getMana() - getMasterAbility().getManaCost());
-            player.sendMessage(ChatColor.BLUE + getMasterAbility().getName() + ": -" + getMasterAbility().getManaCost() + " Mana");
-
+            return false;
         }
+        new AbilityUtil().sendAbility(player, getMasterAbility());
+        gamePlayer.setMana(gamePlayer.getMana() - getMasterAbility().getManaCost());
+        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 2);
+        ParticleEffect.HEART.display(player.getLocation().add(0, .75, 0), 1, 1, 1, 0, 16, null, Bukkit.getOnlinePlayers());
+        ParticleEffect.VILLAGER_HAPPY.display(player.getLocation().add(0, .75, 0), 1, 1, 1, 0, 16,null, Bukkit.getOnlinePlayers());
+        AbilityUtil.heal(player, 10);
         return true;
     }
 

@@ -15,11 +15,11 @@ public class MainCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if(label.equalsIgnoreCase("bz")) {
             Player player = (Player) sender;
+            if(args.length == 0) {
+                player.sendMessage(ChatColor.RED + "Error: /bz join [GameName] | /bz leave");
+                return true;
+            }
              if(args[0].equalsIgnoreCase("join")) {
-                if(args.length == 1) {
-                    player.sendMessage(ChatColor.RED + "Error: /bz join [GameName]");
-                    return true;
-                }
                 Game game = Main.getInstance().getGame(args[1]);
                 if(game == null) {
                     player.sendMessage("That game does not exist");
@@ -33,13 +33,11 @@ public class MainCommand implements CommandExecutor {
                 gamePlayer.setGame(game);
                 game.joinGame(gamePlayer);
             }
-             if(args[1].equalsIgnoreCase("leave")) {
-                 if(!Main.getInstance().isInGame(player)) {
-                     player.sendMessage("You are not in a game");
-                     return true;
+             if(args[0].equalsIgnoreCase("leave")) {
+                 if(Main.getInstance().isInGame(player)) {
+                     Game game = Main.getInstance().getGame(player);
+                     game.leaveGame(Main.getInstance().getPlayer(player));
                  }
-                 Game game = Main.getInstance().getGame(player);
-                 game.leaveGame(Main.getInstance().getPlayer(player));
              }
         }
         return false;
