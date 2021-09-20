@@ -5,6 +5,7 @@ import me.TahaCheji.data.Game;
 import me.TahaCheji.data.GamePlayer;
 import me.TahaCheji.data.PlayerLocation;
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -59,6 +60,7 @@ public class PlayerDeath implements Listener {
         GamePlayer gamePlayer = game.getGamePlayer(player);
         game.getGamePlayer(player).setLives(game.getGamePlayer(player).getLives() - 1);
         gamePlayer.getPlayer().playSound(player.getLocation(), Sound.BLOCK_GLASS_BREAK, 10, 10);
+        game.sendMessage(player.getDisplayName() + " has died");
         if (game.getGamePlayer(player).getLives() <= 0) {
             game.getPlayers().remove(gamePlayer);
             GamePlayer winner = game.getPlayers().get(0);

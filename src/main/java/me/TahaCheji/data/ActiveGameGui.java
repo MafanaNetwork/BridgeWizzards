@@ -70,7 +70,7 @@ public class ActiveGameGui implements Listener {
         for(Game game : Main.getInstance().getActiveGames()) {
             ItemStack itemStack = game.getGameIcon();
             ItemMeta itemMeta = itemStack.getItemMeta();
-            itemMeta.setDisplayName(ChatColor.GOLD + game.getName());
+            itemMeta.setDisplayName(game.getName());
             List<String> itemLore = new ArrayList<>();
             itemLore.add("");
             itemLore.add(ChatColor.GOLD + "Click To Join The Active Game");

@@ -40,7 +40,6 @@ public class InGameScoreBoard {
         time.addEntry(ChatColor.BLACK + "" + ChatColor.GOLD);
         time.setPrefix(ChatColor.GRAY + ">> " + ChatColor.GOLD + "Time: " + game.getGameTime());
         obj.getScore(ChatColor.BLACK + "" + ChatColor.GOLD).setScore(12);
-        System.out.println(game.getGameTime());
 
         Score emptyText3 = obj.getScore("    ");
         emptyText3.setScore(11);

@@ -38,7 +38,8 @@ public class Game {
 
     private List<GamePlayer> activePlayers = new ArrayList<>();
 
-    public InGameScoreBoard inGameScoreBoard;
+    public InGameScoreBoard inGameScoreBoard = new InGameScoreBoard();
+    GameCountdownTask gameCountdownTask;
 
 
     public Game(String name, ItemStack gameIcon, GameMode gameMode, int mana, int lives, GameMap map) {
@@ -86,7 +87,6 @@ public class Game {
         gamePlayer.teleport(lobbySpawn);
 
         Main.getInstance().setGame(gamePlayer.getPlayer(), this);
-        inGameScoreBoard = new InGameScoreBoard();
         inGameScoreBoard.setGameScoreboard(gamePlayer);
         setState(GameState.LOBBY);
         if (activePlayers.size() == 2 && !isState(GameState.STARTING)) {
@@ -116,17 +116,14 @@ public class Game {
         if (inGameScoreBoard != null) {
             inGameScoreBoard.stopUpdating();
         }
+        gameCountdownTask.getGameRunTask().getGameTask().setGameTimer(300);
+        gameCountdownTask.getGameRunTask().getGameTask().cancel();
         if (p1 != null) {
             p1.getPlayer().sendMessage("Game has ended");
             p1.getPlayer().teleport(Main.getInstance().getLobbyPoint());
             p1.getPlayer().getPlayer().getInventory().clear();
             p1.getPlayer().getPlayer().getInventory().setArmorContents(null);
             p1.setPlayerLocation(PlayerLocation.LOBBY);
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Main.getInstance(), new Runnable() {
-                public void run() {
-                    p1.getPlayer().setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
-                }
-            }, 20L);
             Main.getInstance().playerGameMap.remove(p1.getPlayer(), this);
             LobbyScoreBoard lobbyScoreBoard = new LobbyScoreBoard();
             lobbyScoreBoard.setLobbyScoreBoard(p1);
@@ -138,17 +135,14 @@ public class Game {
             p2.getPlayer().getPlayer().getInventory().clear();
             p2.getPlayer().getPlayer().getInventory().setArmorContents(null);
             p2.setPlayerLocation(PlayerLocation.LOBBY);
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Main.getInstance(), new Runnable() {
-                public void run() {
-                    p2.getPlayer().setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
-                }
-            }, 20L);
             Main.getInstance().playerGameMap.remove(p2.getPlayer(), this);
             LobbyScoreBoard lobbyScoreBoard = new LobbyScoreBoard();
             lobbyScoreBoard.setLobbyScoreBoard(p2);
             lobbyScoreBoard.updateScoreBoard(p2);
         }
+        Main.getInstance().getGames().remove(this);
         resetGameInfo();
+        Main.getInstance().getGames().add(this);
         Main.getInstance().removeActiveGame(this);
     }
 
@@ -157,7 +151,7 @@ public class Game {
         p2 = null;
         getPlayers().clear();
         gameTime = 300;
-        inGameScoreBoard = null;
+        inGameScoreBoard = new InGameScoreBoard();
     }
 
     public void setWinner(GamePlayer winner, Game game) {
@@ -168,14 +162,13 @@ public class Game {
         game.stopGame();
     }
 
-    public Location assignSpawnPositions() {
+    public void assignSpawnPositions() {
         p1.teleport(p1Location);
         p2.teleport(p2Location);
         for (GamePlayer gamePlayer : getPlayers()) {
             gamePlayer.getPlayer().setGameMode(org.bukkit.GameMode.SURVIVAL);
             gamePlayer.getPlayer().setHealth(gamePlayer.getPlayer().getMaxHealth());
         }
-        return null;
     }
 
     public void joinAdmin (GamePlayer gamePlayer) {
@@ -195,7 +188,8 @@ public class Game {
     }
 
     public void startCountdown() {
-        new GameCountdownTask(this).runTaskTimer(Main.getInstance(), 0, 20);
+       gameCountdownTask = new GameCountdownTask(this);
+       gameCountdownTask.runTaskTimer(Main.getInstance(), 0, 20);
     }
 
     public void setLobbySpawn(Location lobbySpawn) {

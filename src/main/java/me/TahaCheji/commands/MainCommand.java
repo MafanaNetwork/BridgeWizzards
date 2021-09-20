@@ -30,6 +30,10 @@ public class MainCommand implements CommandExecutor {
                     return true;
                 }
                 GamePlayer gamePlayer = Main.getInstance().getPlayer(player);
+                if(Main.getInstance().isInGame(player)) {
+                    player.sendMessage("You are already in a game");
+                    return true;
+                }
                 gamePlayer.setGame(game);
                 game.joinGame(gamePlayer);
             }
@@ -39,9 +43,14 @@ public class MainCommand implements CommandExecutor {
                      game.leaveGame(Main.getInstance().getPlayer(player));
                      return true;
                  }
-                 if(player.isOp()) {
+             }
+             if(args[0].equalsIgnoreCase("hub")) {
+                 if(Main.getInstance().isInGame(player)) {
                      Game game = Main.getInstance().getGame(player);
-                     game.leaveAdmin(Main.getInstance().getPlayer(player));
+                     game.leaveGame(Main.getInstance().getPlayer(player));
+                     return true;
+                 }else {
+                     player.teleport(Main.getInstance().getLobbyPoint());
                  }
              }
         }

@@ -7,13 +7,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class ActiveGameTask extends BukkitRunnable {
 
     private Game game;
-    private int gameTimer = 300;
+    private int gameTimer;
     InGameScoreBoard gameScoreBoard = new InGameScoreBoard();
 
-    public ActiveGameTask(Game game) {
+    public ActiveGameTask(Game game, int gameTimer) {
         this.game = game;
+        this.gameTimer = gameTimer;
     }
-
     @Override
     public void run() {
         if(this.gameTimer <= 0) {
@@ -24,5 +24,13 @@ public class ActiveGameTask extends BukkitRunnable {
             gameTimer --;
             game.setGameTime(gameTimer);
         }
+    }
+
+    public int getGameTimer() {
+        return game.getGameTime();
+    }
+
+    public void setGameTimer(int gameTimer) {
+        this.gameTimer = gameTimer;
     }
 }

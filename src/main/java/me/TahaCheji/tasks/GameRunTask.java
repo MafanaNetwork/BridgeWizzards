@@ -22,6 +22,7 @@ public class GameRunTask extends BukkitRunnable {
 
     private Game game;
     private int startIn = 10;
+    ActiveGameTask gameTask;
 
     public GameRunTask(Game game) {
         this.game = game;
@@ -122,10 +123,15 @@ public class GameRunTask extends BukkitRunnable {
                 player.getInventory().setItem(8, new Earthquake().getItem());
                 player.updateInventory();
             }
-            new ActiveGameTask(game).runTaskTimer(Main.getInstance(), 0, 20);
+            gameTask = new ActiveGameTask(game, game.getGameTime());
+            gameTask.runTaskTimer(Main.getInstance(), 0, 20);
         } else {
             startIn -= 1;
             this.game.sendMessage("The game will begin in " + startIn + " second" + (startIn == 1 ? "" : "s"));
         }
+    }
+
+    public ActiveGameTask getGameTask() {
+        return gameTask;
     }
 }

@@ -5,6 +5,7 @@ import me.TahaCheji.commands.MainCommand;
 import me.TahaCheji.data.Game;
 import me.TahaCheji.data.GameData;
 import me.TahaCheji.data.GamePlayer;
+import me.TahaCheji.data.PlayerLocation;
 import me.TahaCheji.itemData.MasterItems;
 import me.TahaCheji.util.Files;
 import me.TahaCheji.util.ServerVersion;
@@ -75,6 +76,15 @@ public final class Main extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
+        for(Game game : activeGames) {
+            game.stopGame();
+        }
+
+        for(Player player : Bukkit.getOnlinePlayers()) {
+            player.teleport(getLobbyPoint());
+            GamePlayer gamePlayer = new GamePlayer(player, PlayerLocation.LOBBY);
+            addGamePlayer(gamePlayer);
+        }
 
         getCommand("bzAdmin").setExecutor(new AdminCommand());
         getCommand("bz").setExecutor(new MainCommand());
@@ -130,6 +140,16 @@ public final class Main extends JavaPlugin {
         }
 
         return null;
+    }
+
+    public void addGamePlayer(GamePlayer gamePlayer) {
+        if(players.contains(gamePlayer)) {
+            System.out.println("could not add game player");
+            return;
+        } else  {
+            players.add(gamePlayer);
+        }
+
     }
 
     public Game getGame(Player player) {
