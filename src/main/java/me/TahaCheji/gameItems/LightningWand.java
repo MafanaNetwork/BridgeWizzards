@@ -23,7 +23,7 @@ public class LightningWand extends MasterItems {
 
 
     public LightningWand() {
-        super("LightningWand", Material.BONE, ItemType.WAND, RarityType.GOLD, true, new MasterAbility("Sparkle", AbilityType.RIGHT_CLICK, 75, 5), false, "I STRIKE AGAIN MUAHAHAHA");
+        super("LightningWand", Material.BONE, ItemType.WAND, RarityType.GOLD, true, new MasterAbility("Sparkle", AbilityType.RIGHT_CLICK, 75, 5, "Right click to zap mobs in a 10 by 10 radios dealing 5 damage"), false, "I STRIKE AGAIN MUAHAHAHA");
     }
 
     @Override
@@ -44,7 +44,7 @@ public class LightningWand extends MasterItems {
     @Override
     public boolean rightClickAirAction(Player player, ItemStack var2) {
         GamePlayer gamePlayer = Main.getInstance().getPlayer(player);
-        if(!(gamePlayer.getMana() > getMasterAbility().getManaCost())) {
+        if (!(gamePlayer.getMana() > getMasterAbility().getManaCost())) {
             player.sendMessage(ChatColor.RED + "You do not have the mana to use this ability");
             player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_HURT, 10, 1);
             return false;
@@ -60,7 +60,7 @@ public class LightningWand extends MasterItems {
                     break;
                 count++;
                 new DamageManager(player, (LivingEntity) ent, getMasterAbility()).damage();
-                ParticleEffect.EXPLOSION_LARGE.display(ent.getLocation().add(0, 1, 0), 0, 0, 0, 0, 1,null, Bukkit.getOnlinePlayers());
+                ParticleEffect.EXPLOSION_LARGE.display(ent.getLocation().add(0, 1, 0), 0, 0, 0, 0, 1, null, Bukkit.getOnlinePlayers());
                 Location loc_t = player.getLocation().add(0, .75, 0);
                 Location loc_ent = ent.getLocation().add(0, .75, 0);
                 for (double j1 = 0; j1 < 1; j1 += .04) {

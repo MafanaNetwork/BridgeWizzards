@@ -23,7 +23,7 @@ public class MeteorStaff extends MasterItems {
 
 
     public MeteorStaff() {
-        super("MeteorStaff", Material.ARROW, ItemType.STAFF, RarityType.DIAMOND, true, new MasterAbility("Meteor Strike", AbilityType.RIGHT_CLICK, 150, 15, "Right Click to turn invisible"), false, "I didn't steal it from Terraria I swear");
+        super("MeteorStaff", Material.ARROW, ItemType.STAFF, RarityType.DIAMOND, true, new MasterAbility("Meteor Strike", AbilityType.RIGHT_CLICK, 150, 15, "Right Click to summon a meteor from above"), false, "I didn't steal it from Terraria I swear");
     }
 
     @Override
@@ -44,7 +44,7 @@ public class MeteorStaff extends MasterItems {
     @Override
     public boolean rightClickAirAction(Player player, ItemStack var2) {
         GamePlayer gamePlayer = Main.getInstance().getPlayer(player);
-        if(!(gamePlayer.getMana() > getMasterAbility().getManaCost())) {
+        if (!(gamePlayer.getMana() > getMasterAbility().getManaCost())) {
             player.sendMessage(ChatColor.RED + "You do not have the mana to use this ability");
             player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_HURT, 10, 1);
             return false;

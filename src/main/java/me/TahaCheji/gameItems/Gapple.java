@@ -22,7 +22,7 @@ public class Gapple extends MasterItems {
 
 
     public Gapple() {
-        super("Gapple", Material.YELLOW_DYE, ItemType.SPELL, RarityType.GOLD, true, new MasterAbility("Heal", AbilityType.RIGHT_CLICK, 50, 0), true, "");
+        super("Gapple", Material.YELLOW_DYE, ItemType.SPELL, RarityType.GOLD, true, new MasterAbility("Heal", AbilityType.RIGHT_CLICK, 50, 0, "Right click to heal 5 hearts"), true, "");
     }
 
     @Override
@@ -43,7 +43,7 @@ public class Gapple extends MasterItems {
     @Override
     public boolean rightClickAirAction(Player player, ItemStack var2) {
         GamePlayer gamePlayer = Main.getInstance().getPlayer(player);
-        if(!(gamePlayer.getMana() > getMasterAbility().getManaCost())) {
+        if (!(gamePlayer.getMana() > getMasterAbility().getManaCost())) {
             player.sendMessage(ChatColor.RED + "You do not have the mana to use this ability");
             player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_HURT, 10, 1);
             return false;
@@ -52,7 +52,7 @@ public class Gapple extends MasterItems {
         gamePlayer.setMana(gamePlayer.getMana() - getMasterAbility().getManaCost());
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 2);
         ParticleEffect.HEART.display(player.getLocation().add(0, .75, 0), 1, 1, 1, 0, 16, null, Bukkit.getOnlinePlayers());
-        ParticleEffect.VILLAGER_HAPPY.display(player.getLocation().add(0, .75, 0), 1, 1, 1, 0, 16,null, Bukkit.getOnlinePlayers());
+        ParticleEffect.VILLAGER_HAPPY.display(player.getLocation().add(0, .75, 0), 1, 1, 1, 0, 16, null, Bukkit.getOnlinePlayers());
         AbilityUtil.heal(player, 10);
         return true;
     }

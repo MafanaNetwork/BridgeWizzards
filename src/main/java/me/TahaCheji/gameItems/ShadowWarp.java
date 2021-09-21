@@ -25,11 +25,10 @@ import java.util.UUID;
 public class ShadowWarp extends MasterItems implements Listener {
 
 
-
     private List<java.util.UUID> shadowVeil = new ArrayList<UUID>();
 
     public ShadowWarp() {
-        super("ShadowWarp", Material.BLACK_DYE, ItemType.SPELL, RarityType.OBSIDAIN, true, new MasterAbility("Shadow Veil", AbilityType.RIGHT_CLICK, 100, 0), true, "Invis baby");
+        super("ShadowWarp", Material.BLACK_DYE, ItemType.SPELL, RarityType.OBSIDAIN, true, new MasterAbility("Shadow Veil", AbilityType.RIGHT_CLICK, 100, 0, "Right click to turn invisible"), true, "Invis baby");
     }
 
     @Override
@@ -50,7 +49,7 @@ public class ShadowWarp extends MasterItems implements Listener {
     @Override
     public boolean rightClickAirAction(Player player, ItemStack var2) {
         GamePlayer gamePlayer = Main.getInstance().getPlayer(player);
-        if(!(gamePlayer.getMana() > getMasterAbility().getManaCost())) {
+        if (!(gamePlayer.getMana() > getMasterAbility().getManaCost())) {
             player.sendMessage(ChatColor.RED + "You do not have the mana to use this ability");
             player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_HURT, 10, 1);
             return false;
@@ -82,7 +81,7 @@ public class ShadowWarp extends MasterItems implements Listener {
                     for (Player online : Bukkit.getOnlinePlayers())
                         online.showPlayer(player);
                     ParticleEffect.SMOKE_LARGE.display(player.getLocation().add(0, 1, 0), 0, 0, 0, .13f, 32, null, Bukkit.getOnlinePlayers());
-                   player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 3, 0);
+                    player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 3, 0);
                     cancel();
                 }
                 if (y < 4)

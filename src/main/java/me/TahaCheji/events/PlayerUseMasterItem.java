@@ -29,7 +29,7 @@ public class PlayerUseMasterItem implements Listener {
     )
     private void onPlayerUse(PlayerInteractEvent event) {
         GamePlayer gamePlayer = Main.getInstance().getPlayer(event.getPlayer());
-        if(Main.getInstance().isInGame(gamePlayer.getPlayer()) || gamePlayer.getPlayer().isOp()) {
+        if (Main.getInstance().isInGame(gamePlayer.getPlayer()) || gamePlayer.getPlayer().isOp()) {
             if (ItemUtil.isMasterItem(event.getPlayer().getInventory().getItemInMainHand())) {
                 this.useMasterItem(event, event.getPlayer().getInventory().getItemInMainHand());
             }
@@ -43,7 +43,7 @@ public class PlayerUseMasterItem implements Listener {
     )
     private void onPlayerHit(EntityDamageByEntityEvent event) {
         if (event.getDamager().getType() == EntityType.PLAYER) {
-            Player player = (Player)event.getDamager();
+            Player player = (Player) event.getDamager();
             ItemStack mainhand = player.getInventory().getItemInMainHand();
             ItemStack offhand = player.getInventory().getItemInOffHand();
             MasterItems uber;
@@ -79,54 +79,54 @@ public class PlayerUseMasterItem implements Listener {
         if (ItemUtil.isMasterItem(item)) {
             MasterItems uber = ItemUtil.getMasterItem(item);
             if (uber != null) {
-                        if (uber.breakBlockAction(player, event, event.getBlock(), item)) {
-                            uber.onItemUse(player, item);
-                        }
+                if (uber.breakBlockAction(player, event, event.getBlock(), item)) {
+                    uber.onItemUse(player, item);
                 }
             }
         }
+    }
 
 
     private void useMasterItem(PlayerInteractEvent event, ItemStack item) {
         Player player = event.getPlayer();
         MasterItems uber = ItemUtil.getMasterItem(item);
         if (uber != null) {
-                if (event.getAction() == Action.LEFT_CLICK_AIR) {
-                    if (!player.isSneaking()) {
-                        if (uber.leftClickAirAction(player, item)) {
-                            uber.onItemUse(player, item);
-                        }
-                    } else if (uber.shiftLeftClickAirAction(player, item)) {
+            if (event.getAction() == Action.LEFT_CLICK_AIR) {
+                if (!player.isSneaking()) {
+                    if (uber.leftClickAirAction(player, item)) {
                         uber.onItemUse(player, item);
                     }
-                } else if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
-
-                    if (!player.isSneaking()) {
-                        if (uber.leftClickBlockAction(player, event, event.getClickedBlock(), item)) {
-                            uber.onItemUse(player, item);
-                        }
-                    } else if (uber.shiftLeftClickBlockAction(player, event, event.getClickedBlock(), item)) {
-                        uber.onItemUse(player, item);
-                    }
-                } else if (event.getAction() == Action.RIGHT_CLICK_AIR) {
-                    if (!player.isSneaking()) {
-                        if (uber.rightClickAirAction(player, item)) {
-                            uber.onItemUse(player, item);
-                        }
-                    } else if (uber.shiftRightClickAirAction(player, item)) {
-                        System.out.println("2");
-                        uber.onItemUse(player, item);
-                    }
-                } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-
-                    if (!player.isSneaking()) {
-                        if (uber.rightClickBlockAction(player, event, event.getClickedBlock(), item)) {
-                            uber.onItemUse(player, item);
-                        }
-                    } else if (uber.shiftRightClickBlockAction(player, event, event.getClickedBlock(), item)) {
-                        uber.onItemUse(player, item);
-                    }
+                } else if (uber.shiftLeftClickAirAction(player, item)) {
+                    uber.onItemUse(player, item);
                 }
+            } else if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
+
+                if (!player.isSneaking()) {
+                    if (uber.leftClickBlockAction(player, event, event.getClickedBlock(), item)) {
+                        uber.onItemUse(player, item);
+                    }
+                } else if (uber.shiftLeftClickBlockAction(player, event, event.getClickedBlock(), item)) {
+                    uber.onItemUse(player, item);
+                }
+            } else if (event.getAction() == Action.RIGHT_CLICK_AIR) {
+                if (!player.isSneaking()) {
+                    if (uber.rightClickAirAction(player, item)) {
+                        uber.onItemUse(player, item);
+                    }
+                } else if (uber.shiftRightClickAirAction(player, item)) {
+                    System.out.println("2");
+                    uber.onItemUse(player, item);
+                }
+            } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+
+                if (!player.isSneaking()) {
+                    if (uber.rightClickBlockAction(player, event, event.getClickedBlock(), item)) {
+                        uber.onItemUse(player, item);
+                    }
+                } else if (uber.shiftRightClickBlockAction(player, event, event.getClickedBlock(), item)) {
+                    uber.onItemUse(player, item);
+                }
+            }
         }
     }
-    }
+}

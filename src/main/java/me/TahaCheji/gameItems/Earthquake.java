@@ -50,7 +50,7 @@ public class Earthquake extends MasterItems {
     @Override
     public boolean rightClickAirAction(Player player, ItemStack var2) {
         GamePlayer gamePlayer = Main.getInstance().getPlayer(player);
-        if(!(gamePlayer.getMana() > getMasterAbility().getManaCost())) {
+        if (!(gamePlayer.getMana() > getMasterAbility().getManaCost())) {
             player.sendMessage(ChatColor.RED + "You do not have the mana to use this ability");
             player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_HURT, 10, 1);
             return false;
@@ -58,7 +58,7 @@ public class Earthquake extends MasterItems {
         new AbilityUtil().sendAbility(player, getMasterAbility());
         gamePlayer.setMana(gamePlayer.getMana() - getMasterAbility().getManaCost());
         new BukkitRunnable() {
-            Vector vec = new AbilityUtil().getTargetDirection(player,null).setY(0);
+            Vector vec = new AbilityUtil().getTargetDirection(player, null).setY(0);
             Location loc = player.getLocation().clone();
             int ti = 0;
             List<Integer> hit = new ArrayList<>();

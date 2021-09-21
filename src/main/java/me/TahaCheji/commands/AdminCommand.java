@@ -32,52 +32,52 @@ public class AdminCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if(label.equalsIgnoreCase("bzAdmin")) {
+        if (label.equalsIgnoreCase("bzAdmin")) {
             Player player = (Player) sender;
-            if(!player.isOp()) {
+            if (!player.isOp()) {
                 player.sendMessage("U no have perms");
                 return true;
             }
-            if(args.length == 0) {
+            if (args.length == 0) {
                 return true;
             }
-            if(args[0].equalsIgnoreCase("cheat")) {
-                if(args[1].equalsIgnoreCase("Mana")) {
+            if (args[0].equalsIgnoreCase("cheat")) {
+                if (args[1].equalsIgnoreCase("Mana")) {
                     GamePlayer gamePlayer = Main.getInstance().getPlayer(player);
                     gamePlayer.setMana(Integer.parseInt(args[2]));
                     gamePlayer.getPlayer().sendMessage(ChatColor.GOLD + "You set your mana as " + args[2]);
                 }
-                if(args[1].equalsIgnoreCase("Lives")) {
+                if (args[1].equalsIgnoreCase("Lives")) {
                     GamePlayer gamePlayer = Main.getInstance().getPlayer(player);
                     gamePlayer.setLives(Integer.parseInt(args[2]));
                     gamePlayer.getPlayer().sendMessage(ChatColor.GOLD + "You set your lives as " + args[2]);
                 }
             }
-            if(args[0].equalsIgnoreCase("give")) {
-                if(args[1].equalsIgnoreCase("Items")) {
+            if (args[0].equalsIgnoreCase("give")) {
+                if (args[1].equalsIgnoreCase("Items")) {
                     new ItemGui().getAllItemsGui().open(player);
                 }
                 return true;
             }
-            if(args[0].equalsIgnoreCase("active")) {
+            if (args[0].equalsIgnoreCase("active")) {
                 new ActiveGameGui().getGameGui().open(player);
             }
-            if(args[0].equalsIgnoreCase("troll")) {
+            if (args[0].equalsIgnoreCase("troll")) {
                 Player trollingPlayer = Bukkit.getPlayer(args[1]);
-                if(trollingPlayer == null) {
+                if (trollingPlayer == null) {
                     return true;
                 }
-                if(!trollingPlayer.isOnline()) {
+                if (!trollingPlayer.isOnline()) {
                     return true;
                 }
                 //create the troll and troll the player
             }
-            if(args[0].equalsIgnoreCase("stop")) {
+            if (args[0].equalsIgnoreCase("stop")) {
                 Game game = Main.getInstance().getGame(args[1]);
                 game.stopGame();
             }
-            if(args[0].equalsIgnoreCase("edit")) {
-                if(args[2].equalsIgnoreCase("stop")) {
+            if (args[0].equalsIgnoreCase("edit")) {
+                if (args[2].equalsIgnoreCase("stop")) {
                     player.teleport(Main.getInstance().getLobbyPoint());
                     gameMap.unload();
                 }
@@ -85,9 +85,9 @@ public class AdminCommand implements CommandExecutor {
                 GameMap gameMap = new LocalGameMap(gameMapsFolder, args[1], true);
                 player.teleport(gameMap.getWorld().getSpawnLocation());
             }
-            if(args[0].equalsIgnoreCase("create")) {
-                if(args[1].equalsIgnoreCase("game")) {
-                    if(args[2].equalsIgnoreCase("save")) {
+            if (args[0].equalsIgnoreCase("create")) {
+                if (args[1].equalsIgnoreCase("game")) {
+                    if (args[2].equalsIgnoreCase("save")) {
                         game = new Game(gameName, gameIcon, gameMode, gameMana, gameLives, gameMap);
                         try {
                             game.saveGame();
@@ -97,22 +97,22 @@ public class AdminCommand implements CommandExecutor {
                         }
                         return true;
                     }
-                    if(!(args.length >= 7)) {
+                    if (!(args.length >= 7)) {
                         return true;
                     }
                     gameName = args[2];
-                    if(args[3].equalsIgnoreCase("gameIcon")) {
+                    if (args[3].equalsIgnoreCase("gameIcon")) {
                         gameIcon = player.getItemInHand();
                     }
                     gameMode = GameMode.NORMAL;
-                    gameMana =  Integer.parseInt(args[4]);
-                    gameLives =  Integer.parseInt(args[5]);
+                    gameMana = Integer.parseInt(args[4]);
+                    gameLives = Integer.parseInt(args[5]);
                     File gameMapsFolder = new File(Main.getInstance().getDataFolder(), "maps");
                     gameMap = new LocalGameMap(gameMapsFolder, args[6], false);
                     player.sendMessage(ChatColor.GREEN + "GameBuilder" + "Great now all you need to do is save your game then add the spawn points! [You can do that in the yml game file]");
-                    }
                 }
             }
+        }
         return false;
     }
 }

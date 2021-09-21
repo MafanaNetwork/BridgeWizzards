@@ -6,6 +6,7 @@ import dev.triumphteam.gui.guis.GuiItem;
 import dev.triumphteam.gui.guis.PaginatedGui;
 import me.TahaCheji.Main;
 import me.TahaCheji.itemData.MasterItems;
+import me.TahaCheji.util.NBTUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -81,6 +82,7 @@ public class GameGui implements Listener {
             itemLore.add(ChatColor.GOLD + "Click To Join The Game");
             itemMeta.setLore(itemLore);
             itemStack.setItemMeta(itemMeta);
+            itemStack = NBTUtils.setString(itemStack, "GameName", game.getName());
             gui.addItem(new GuiItem(itemStack));
         }
         return gui;
@@ -102,12 +104,10 @@ public class GameGui implements Listener {
         if(event.getCurrentItem().getType() == Material.PURPLE_STAINED_GLASS_PANE || event.getCurrentItem().getType() == Material.PAPER) {
             return;
         }
-        System.out.println("1");
         Player player = (Player) event.getWhoClicked();
         GamePlayer gamePlayer = Main.getInstance().getPlayer(player);
-        Game game = Main.getInstance().getGame(event.getCurrentItem().getItemMeta().getDisplayName());
+        Game game = Main.getInstance().getGame(NBTUtils.getString(event.getCurrentItem(), "GameName"));
         if(game == null) {
-            System.out.println(event.getCurrentItem().getItemMeta().getDisplayName());
             return;
         }
         gamePlayer.setGame(game);

@@ -28,7 +28,7 @@ public class WandOfRespiration extends MasterItems {
 
 
     public WandOfRespiration() {
-        super("WandOfRespiration", Material.STICK, ItemType.STAFF, RarityType.REDSTONE, true, new MasterAbility("Celestial Damage", AbilityType.RIGHT_CLICK, 55, 2), false, "The magic comes from you.");
+        super("WandOfRespiration", Material.STICK, ItemType.STAFF, RarityType.REDSTONE, true, new MasterAbility("Celestial Damage", AbilityType.RIGHT_CLICK, 55, 2, "Right click to summon a beam dealing 2 damage"), false, "The magic comes from you.");
     }
 
     @Override
@@ -47,10 +47,11 @@ public class WandOfRespiration extends MasterItems {
     }
 
     int t = 0;
+
     @Override
     public boolean rightClickAirAction(Player player, ItemStack var2) {
         GamePlayer gamePlayer = Main.getInstance().getPlayer(player);
-        if(!(gamePlayer.getMana() > getMasterAbility().getManaCost())) {
+        if (!(gamePlayer.getMana() > getMasterAbility().getManaCost())) {
             player.sendMessage(ChatColor.RED + "You do not have the mana to use this ability");
             player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_HURT, 10, 1);
         } else {
@@ -76,15 +77,15 @@ public class WandOfRespiration extends MasterItems {
                             ParticleEffect.FIREWORKS_SPARK.display(loc, AbilityUtil.rotateFunc(v, loc), .09f, 0, null, Bukkit.getOnlinePlayers());
                         }
                         for (Entity target : loc.getNearbyEntities(1, 1, 1)) {
-                            if(target.equals(player) || !(target instanceof  LivingEntity)) {
+                            if (target.equals(player) || !(target instanceof LivingEntity)) {
                                 continue;
                             }
-                                ParticleEffect.EXPLOSION_LARGE.display(loc, 0, 0, 0, 0, 1, null, Bukkit.getOnlinePlayers());
-                                ParticleEffect.FIREWORKS_SPARK.display(loc, 0, 0, 0, .2f, 32, null, Bukkit.getOnlinePlayers());
-                                loc.getWorld().playSound(loc, Sound.ENTITY_GENERIC_EXPLODE, 2, 1);
-                                new DamageManager(player, (LivingEntity) target, getMasterAbility()).damage();
-                                cancel();
-                                return;
+                            ParticleEffect.EXPLOSION_LARGE.display(loc, 0, 0, 0, 0, 1, null, Bukkit.getOnlinePlayers());
+                            ParticleEffect.FIREWORKS_SPARK.display(loc, 0, 0, 0, .2f, 32, null, Bukkit.getOnlinePlayers());
+                            loc.getWorld().playSound(loc, Sound.ENTITY_GENERIC_EXPLODE, 2, 1);
+                            new DamageManager(player, (LivingEntity) target, getMasterAbility()).damage();
+                            cancel();
+                            return;
                         }
                         if (ti > 40)
                             cancel();
