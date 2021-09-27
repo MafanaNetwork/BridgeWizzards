@@ -30,7 +30,7 @@ public class MasterAbility {
         if(abilityDamage == 0) {
             lore.add(ChatColor.RED + "Ability Damage: " + abilityDamage + ChatColor.DARK_GRAY + " | " + ChatColor.AQUA + "ManaCost: " + manaCost);
         } else {
-            lore.add(ChatColor.RED + "Ability Damage: " + abilityDamage + ChatColor.DARK_GRAY + " [+ " + gamePlayer.getLevels().getLevel() / 0.5 + "]" + " | " + ChatColor.AQUA + "ManaCost: " + manaCost);
+            lore.add(ChatColor.RED + "Ability Damage: " + abilityDamage + ChatColor.DARK_GRAY + " [+ " + gamePlayer.getLevels().getLevel() / 0.2 + "]" + " | " + ChatColor.AQUA + "ManaCost: " + manaCost);
         }
         lore.add("");
         for(String string : description) {
