@@ -2,6 +2,7 @@ package me.TahaCheji.events;
 
 import me.TahaCheji.Main;
 import me.TahaCheji.gameData.Game;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,7 +14,7 @@ public class PlayerBreak implements Listener {
     public void onBreak(BlockBreakEvent e) {
         Player player = e.getPlayer();
         Game game = Main.getInstance().getGame(player);
-        if(e.getPlayer().isOp()) {
+        if(e.getPlayer().getGameMode() == GameMode.CREATIVE) {
             e.setCancelled(false);
             return;
         }

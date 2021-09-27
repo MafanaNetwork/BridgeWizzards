@@ -44,16 +44,19 @@ public class AdminCommand implements CommandExecutor {
                 return true;
             }
             if (args[0].equalsIgnoreCase("cheat")) {
+
                 if (args[1].equalsIgnoreCase("Mana")) {
                     GamePlayer gamePlayer = Main.getInstance().getPlayer(player);
                     gamePlayer.setMana(Integer.parseInt(args[2]));
                     gamePlayer.getPlayer().sendMessage(ChatColor.GOLD + "You set your mana as " + args[2]);
                 }
+
                 if (args[1].equalsIgnoreCase("Lives")) {
                     GamePlayer gamePlayer = Main.getInstance().getPlayer(player);
                     gamePlayer.setLives(Integer.parseInt(args[2]));
                     gamePlayer.getPlayer().sendMessage(ChatColor.GOLD + "You set your lives as " + args[2]);
                 }
+
                 if(args[1].equalsIgnoreCase("lvl")) {
                     if(args.length == 2) {
                         GamePlayer gamePlayer = Main.getInstance().getPlayer(player);
@@ -81,14 +84,30 @@ public class AdminCommand implements CommandExecutor {
                     }
                 }
                 if(args[1].equalsIgnoreCase("xp")) {
-                    GamePlayer gamePlayer = Main.getInstance().getPlayer(player);
-                    Levels levels = gamePlayer.getLevels();
-                    try {
-                        levels.addXp(Integer.parseInt(args[2]));
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    if(args.length == 2) {
+                        GamePlayer gamePlayer = Main.getInstance().getPlayer(player);
+                        Levels levels = gamePlayer.getLevels();
+                        levels.setXp(Integer.parseInt(args[2]));
+                        gamePlayer.setLevels(levels);
+                        try {
+                            levels.saveLvl();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        gamePlayer.getPlayer().sendMessage(ChatColor.GOLD + "You set your lvl xp as " + args[2]);
+                        return true;
+                    } else {
+                        GamePlayer gamePlayer = Main.getInstance().getPlayer(Bukkit.getPlayer(args[2]));
+                        Levels levels = gamePlayer.getLevels();
+                        levels.setXp(Integer.parseInt(args[3]));
+                        gamePlayer.setLevels(levels);
+                        try {
+                            levels.saveLvl();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        gamePlayer.getPlayer().sendMessage(ChatColor.GOLD + "You set your lvl as " + args[3]);
                     }
-                    gamePlayer.getPlayer().sendMessage(ChatColor.GOLD + "You set your lvl xp as " + args[2]);
                 }
             }
             if (args[0].equalsIgnoreCase("give")) {
