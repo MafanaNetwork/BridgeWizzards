@@ -37,6 +37,11 @@ public class Files {
 		if(!games.exists()) {
 			games.mkdir();
 		}
+
+		File playerData = new File("plugins/BridgeWiz/playerData");
+		if(!playerData.exists()) {
+			playerData.mkdir();
+		}
 		
 		loadFiles();
 		

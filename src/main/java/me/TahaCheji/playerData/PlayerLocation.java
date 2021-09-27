@@ -1,4 +1,4 @@
-package me.TahaCheji.data;
+package me.TahaCheji.playerData;
 
 public enum PlayerLocation {
 

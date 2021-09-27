@@ -1,13 +1,15 @@
 package me.TahaCheji.commands;
 
 import me.TahaCheji.Main;
-import me.TahaCheji.data.ActiveGameGui;
-import me.TahaCheji.data.Game;
-import me.TahaCheji.data.GameMode;
-import me.TahaCheji.data.GamePlayer;
+import me.TahaCheji.gameData.ActiveGameGui;
+import me.TahaCheji.gameData.Game;
+import me.TahaCheji.gameData.GameMode;
+import me.TahaCheji.gameData.GamePlayer;
 import me.TahaCheji.itemData.ItemGui;
 import me.TahaCheji.mapUtil.GameMap;
 import me.TahaCheji.mapUtil.LocalGameMap;
+import me.TahaCheji.playerData.Levels;
+import me.TahaCheji.playerData.PlayerLocation;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -52,10 +54,46 @@ public class AdminCommand implements CommandExecutor {
                     gamePlayer.setLives(Integer.parseInt(args[2]));
                     gamePlayer.getPlayer().sendMessage(ChatColor.GOLD + "You set your lives as " + args[2]);
                 }
+                if(args[1].equalsIgnoreCase("lvl")) {
+                    if(args.length == 2) {
+                        GamePlayer gamePlayer = Main.getInstance().getPlayer(player);
+                        Levels levels = gamePlayer.getLevels();
+                        levels.setLevel(Integer.parseInt(args[2]));
+                        gamePlayer.setLevels(levels);
+                        try {
+                            levels.saveLvl();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        gamePlayer.getPlayer().sendMessage(ChatColor.GOLD + "You set your lvl as " + args[2]);
+                        return true;
+                    } else {
+                        GamePlayer gamePlayer = Main.getInstance().getPlayer(Bukkit.getPlayer(args[2]));
+                        Levels levels = gamePlayer.getLevels();
+                        levels.setLevel(Integer.parseInt(args[3]));
+                        gamePlayer.setLevels(levels);
+                        try {
+                            levels.saveLvl();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        gamePlayer.getPlayer().sendMessage(ChatColor.GOLD + "You set your lvl as " + args[3]);
+                    }
+                }
+                if(args[1].equalsIgnoreCase("xp")) {
+                    GamePlayer gamePlayer = Main.getInstance().getPlayer(player);
+                    Levels levels = gamePlayer.getLevels();
+                    try {
+                        levels.addXp(Integer.parseInt(args[2]));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    gamePlayer.getPlayer().sendMessage(ChatColor.GOLD + "You set your lvl xp as " + args[2]);
+                }
             }
             if (args[0].equalsIgnoreCase("give")) {
                 if (args[1].equalsIgnoreCase("Items")) {
-                    new ItemGui().getAllItemsGui().open(player);
+                    new ItemGui().getAllItemsGui(Main.getInstance().getPlayer(player)).open(player);
                 }
                 return true;
             }
@@ -77,13 +115,20 @@ public class AdminCommand implements CommandExecutor {
                 game.stopGame();
             }
             if (args[0].equalsIgnoreCase("edit")) {
-                if (args[2].equalsIgnoreCase("stop")) {
-                    player.teleport(Main.getInstance().getLobbyPoint());
-                    gameMap.unload();
-                }
                 File gameMapsFolder = new File(Main.getInstance().getDataFolder(), "maps");
-                GameMap gameMap = new LocalGameMap(gameMapsFolder, args[1], true);
+                gameMap = new LocalGameMap(gameMapsFolder, args[1], false);
+                if(args.length == 3 && args[2].equalsIgnoreCase("save")) {
+                    GameMap newGameMap = Main.getPlayerGameMapHashMap().get(player);
+                    player.teleport(Main.getInstance().getLobbyPoint());
+                    newGameMap.saveMap();
+                    Main.removeGameMap(player, newGameMap);
+                    return true;
+                }
+                gameMap.load();
                 player.teleport(gameMap.getWorld().getSpawnLocation());
+                Main.getInstance().getPlayer(player).setPlayerLocation(PlayerLocation.GAME);
+                player.setGameMode(org.bukkit.GameMode.CREATIVE);
+                Main.addGameMap(player, gameMap);
             }
             if (args[0].equalsIgnoreCase("create")) {
                 if (args[1].equalsIgnoreCase("game")) {

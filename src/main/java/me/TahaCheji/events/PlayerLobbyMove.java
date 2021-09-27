@@ -1,9 +1,9 @@
 package me.TahaCheji.events;
 
 import me.TahaCheji.Main;
-import me.TahaCheji.data.Game;
-import me.TahaCheji.data.GamePlayer;
-import me.TahaCheji.data.PlayerLocation;
+import me.TahaCheji.gameData.Game;
+import me.TahaCheji.gameData.GamePlayer;
+import me.TahaCheji.playerData.PlayerLocation;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

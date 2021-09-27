@@ -1,7 +1,7 @@
 package me.TahaCheji.gameItems;
 
 import me.TahaCheji.Main;
-import me.TahaCheji.data.GamePlayer;
+import me.TahaCheji.gameData.GamePlayer;
 import me.TahaCheji.itemData.*;
 import me.TahaCheji.managers.DamageManager;
 import me.TahaCheji.util.AbilityUtil;
@@ -23,8 +23,9 @@ public class LightningWand extends MasterItems {
 
 
     public LightningWand() {
-        super("LightningWand", Material.BONE, ItemType.WAND, RarityType.GOLD, true, new MasterAbility("Sparkle", AbilityType.RIGHT_CLICK, 75, 5, "Right click to zap mobs in a 10 by 10 radios dealing 5 damage"), false, "I STRIKE AGAIN MUAHAHAHA");
+        super(null, "LightningWand", Material.BONE, ItemType.WAND, RarityType.GOLD, true, new MasterAbility("Sparkle", AbilityType.RIGHT_CLICK, 75, 5, "Right click to zap mobs in a 10 by 10 radios dealing 5 damage"), false, "I STRIKE AGAIN MUAHAHAHA");
     }
+
 
     @Override
     public void onItemStackCreate(ItemStack var1) {
@@ -63,6 +64,7 @@ public class LightningWand extends MasterItems {
                 ParticleEffect.EXPLOSION_LARGE.display(ent.getLocation().add(0, 1, 0), 0, 0, 0, 0, 1, null, Bukkit.getOnlinePlayers());
                 Location loc_t = player.getLocation().add(0, .75, 0);
                 Location loc_ent = ent.getLocation().add(0, .75, 0);
+                ent.setVelocity(ent.getLocation().toVector().subtract(loc_ent.toVector()).multiply(.1).setY(.2));
                 for (double j1 = 0; j1 < 1; j1 += .04) {
                     Vector d = loc_ent.toVector().subtract(loc_t.toVector());
                     ParticleEffect.FIREWORKS_SPARK.display(loc_t.clone().add(d.multiply(j1)), .1f, .1f, .1f, .008f, 3, null, Bukkit.getOnlinePlayers());

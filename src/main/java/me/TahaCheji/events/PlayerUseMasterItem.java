@@ -1,15 +1,10 @@
 package me.TahaCheji.events;
 
 import me.TahaCheji.Main;
-import me.TahaCheji.data.GamePlayer;
+import me.TahaCheji.gameData.GamePlayer;
 import me.TahaCheji.itemData.MasterItems;
 import me.TahaCheji.util.ItemUtil;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

@@ -1,10 +1,10 @@
 package me.TahaCheji.mapUtil;
 
-import me.TahaCheji.util.FileDelete;
+import me.TahaCheji.Main;
+import me.TahaCheji.util.FileUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
-import org.bukkit.util.FileUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,6 +12,7 @@ import java.io.IOException;
 public class LocalGameMap implements GameMap {
     private final File sourceWorldFolder;
     private File activeWorldFolder;
+    private File mapWorldFolder;
 
     private World bukkitWorld;
     private boolean isLoaded;
@@ -30,7 +31,7 @@ public class LocalGameMap implements GameMap {
                         System.currentTimeMillis());
 
         try {
-            FileDelete.copyFolder(sourceWorldFolder, activeWorldFolder);
+            FileUtil.copyFolder(sourceWorldFolder, activeWorldFolder);
             isLoaded = true;
         } catch (IOException e) {
             e.printStackTrace();
@@ -40,20 +41,32 @@ public class LocalGameMap implements GameMap {
 
         if(bukkitWorld != null) {
             this.bukkitWorld.setAutoSave(false);
-            System.out.println(bukkitWorld.getName());
         }
-        isLoaded = true;
+        Main.loadedMaps.add(this);
         return isLoaded();
     }
 
     @Override
     public void unload() {
         if(bukkitWorld != null) Bukkit.unloadWorld(bukkitWorld, false);
-        if(activeWorldFolder != null) FileDelete.delete(activeWorldFolder);
+        if(activeWorldFolder != null) FileUtil.delete(activeWorldFolder);
         isLoaded = false;
         bukkitWorld = null;
         activeWorldFolder = null;
+        Main.loadedMaps.remove(this);
     }
+
+    @Override
+    public void saveMap() {
+        try {
+            if(bukkitWorld != null) Bukkit.unloadWorld(bukkitWorld, true);
+            FileUtil.copyFolder(activeWorldFolder, new File(sourceWorldFolder.getParentFile().getPath(), sourceWorldFolder.getName()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        unload();
+    }
+
 
     @Override
     public boolean restoreFromSource() {

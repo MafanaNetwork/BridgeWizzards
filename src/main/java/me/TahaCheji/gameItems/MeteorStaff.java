@@ -1,7 +1,7 @@
 package me.TahaCheji.gameItems;
 
 import me.TahaCheji.Main;
-import me.TahaCheji.data.GamePlayer;
+import me.TahaCheji.gameData.GamePlayer;
 import me.TahaCheji.itemData.*;
 import me.TahaCheji.managers.DamageManager;
 import me.TahaCheji.util.AbilityUtil;
@@ -23,8 +23,9 @@ public class MeteorStaff extends MasterItems {
 
 
     public MeteorStaff() {
-        super("MeteorStaff", Material.ARROW, ItemType.STAFF, RarityType.DIAMOND, true, new MasterAbility("Meteor Strike", AbilityType.RIGHT_CLICK, 150, 15, "Right Click to summon a meteor from above"), false, "I didn't steal it from Terraria I swear");
+        super(null,"MeteorStaff", Material.ARROW, ItemType.STAFF, RarityType.DIAMOND, true, new MasterAbility("Meteor Strike", AbilityType.RIGHT_CLICK, 150, 15, "Right Click to summon a meteor from above"), false, "I didn't steal it from Terraria I swear");
     }
+
 
     @Override
     public void onItemStackCreate(ItemStack var1) {

@@ -1,14 +1,11 @@
 package me.TahaCheji.scoreboards;
 
 import me.TahaCheji.Main;
-import me.TahaCheji.data.Game;
-import me.TahaCheji.data.GamePlayer;
+import me.TahaCheji.gameData.Game;
+import me.TahaCheji.gameData.GamePlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.*;
-
-import java.util.List;
 
 public class InGameScoreBoard {
 
@@ -46,7 +43,7 @@ public class InGameScoreBoard {
 
         Team playerInfo = board.registerNewTeam("PlayerInfo");
         playerInfo.addEntry(ChatColor.BLACK + "" + ChatColor.GREEN);
-        playerInfo.setPrefix(ChatColor.GRAY + ">> " + ChatColor.GOLD + "Mana: " + player.getMana() + " | Lives: " + player.getLives());
+        playerInfo.setPrefix(ChatColor.GRAY + ">> " + ChatColor.GOLD + "Mana: " + player.getMana() + " | Lives: " + player.getLives() + " | " + "P2 Lives: " + game.getOtherPlayer(player).getLives());
         obj.getScore(ChatColor.BLACK + "" + ChatColor.GREEN).setScore(10);
 
         Score emptyText4 = obj.getScore("      ");
@@ -68,7 +65,7 @@ public class InGameScoreBoard {
                         return;
                     }
                     Scoreboard board = player.getPlayer().getScoreboard();
-                    board.getTeam("PlayerInfo").setPrefix(ChatColor.GRAY + ">> " + ChatColor.GOLD + "Mana: " + player.getMana() + " | Lives: " + player.getLives());
+                    board.getTeam("PlayerInfo").setPrefix(ChatColor.GRAY + ">> " + ChatColor.GOLD + "Mana: " + player.getMana() + " | Lives: " + player.getLives() + " | " + "P2 Lives: " + game.getOtherPlayer(player).getLives());
                     if(game.getGameTime() <= 0) {
                         board.getTeam("GameTime").setPrefix(ChatColor.GRAY + ">> " + ChatColor.GOLD + "Time: " + "Ending");
                     } else {

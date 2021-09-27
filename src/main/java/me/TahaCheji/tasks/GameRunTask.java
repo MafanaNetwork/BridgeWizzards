@@ -1,16 +1,15 @@
 package me.TahaCheji.tasks;
 
 import me.TahaCheji.Main;
-import me.TahaCheji.data.Game;
-import me.TahaCheji.data.GamePlayer;
-import me.TahaCheji.data.PlayerLocation;
+import me.TahaCheji.gameData.Game;
+import me.TahaCheji.gameData.GamePlayer;
+import me.TahaCheji.playerData.PlayerLocation;
 import me.TahaCheji.gameItems.*;
-import me.TahaCheji.scoreboards.InGameScoreBoard;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -30,10 +29,11 @@ public class GameRunTask extends BukkitRunnable {
         for (GamePlayer gamePlayer : game.getPlayers()) {
             gamePlayer.setPlayerLocation(PlayerLocation.GAMELOBBY);
             gamePlayer.getPlayer().setGameMode(GameMode.ADVENTURE);
+            gamePlayer.getPlayer().playSound(gamePlayer.getPlayer().getLocation(), Sound.BLOCK_LEVER_CLICK, 2, 1);
         }
         this.game.assignSpawnPositions();
-        this.game.sendMessage("You've been teleported.");
-        this.game.sendMessage("The game will begin in " + this.startIn + " seconds...");
+        this.game.sendMessage(ChatColor.GOLD + "[Game Manager] "  + "You've been teleported.");
+        this.game.sendMessage(ChatColor.GOLD + "[Game Manager] " + "The game will begin in " + this.startIn + " seconds...");
         this.game.setMovementFrozen(true);
     }
 
@@ -42,7 +42,7 @@ public class GameRunTask extends BukkitRunnable {
         if (startIn <= 1) {
             this.cancel();
             this.game.setState(Game.GameState.ACTIVE);
-            this.game.sendMessage("The game has started.");
+            this.game.sendMessage(ChatColor.GOLD + "[Game Manager] " +"The game has started.");
             this.game.setMovementFrozen(false);
             for(GamePlayer gamePlayer : game.getPlayers()) {
 
@@ -97,10 +97,31 @@ public class GameRunTask extends BukkitRunnable {
                 Main.getInstance().setGame(gamePlayer.getPlayer(), game);
                 gamePlayer.setPlayerLocation(PlayerLocation.GAME);
                 gamePlayer.getPlayer().setGameMode(GameMode.SURVIVAL);
-                ItemStack gappls = new Gapple().getItem();
+                Earthquake earthquake = new Earthquake();
+                earthquake.setGamePlayer(gamePlayer);
+
+                WandOfRespiration wandOfRespiration = new WandOfRespiration();
+                wandOfRespiration.setGamePlayer(gamePlayer);
+                wandOfRespiration.getMasterAbility().setAbilityDamage((int) (wandOfRespiration.getMasterAbility().getAbilityDamage() + gamePlayer.getLevels().getLevel() / 0.2));
+
+                LightningWand lightningWand = new LightningWand();
+                lightningWand.setGamePlayer(gamePlayer);
+                lightningWand.getMasterAbility().setAbilityDamage((int) (lightningWand.getMasterAbility().getAbilityDamage() + gamePlayer.getLevels().getLevel() / 0.2));
+
+                MeteorStaff meteorStaff = new MeteorStaff();
+                meteorStaff.setGamePlayer(gamePlayer);
+                meteorStaff.getMasterAbility().setAbilityDamage((int) (meteorStaff.getMasterAbility().getAbilityDamage() + gamePlayer.getLevels().getLevel() / 0.2));
+
+                ShadowWarp shadowWarp = new ShadowWarp();
+                shadowWarp.setGamePlayer(gamePlayer);
+
+                Gapple gapple = new Gapple();
+                gapple.setGamePlayer(gamePlayer);
+
+                ItemStack gappls = gapple.getItem();
                 gappls.setAmount(4);
 
-                ItemStack shadow = new ShadowWarp().getItem();
+                ItemStack shadow = shadowWarp.getItem();
                 shadow.setAmount(2);
 
 
@@ -112,22 +133,22 @@ public class GameRunTask extends BukkitRunnable {
                 player.getInventory().setLeggings(leggings);
                 player.getInventory().setBoots(boots);
 
-                player.getInventory().setItem(0, new WandOfRespiration().getItem());
-                player.getInventory().setItem(1, new LightningWand().getItem());
-                player.getInventory().setItem(2, new MeteorStaff().getItem());
+                player.getInventory().setItem(0, wandOfRespiration.getItem());
+                player.getInventory().setItem(1, lightningWand.getItem());
+                player.getInventory().setItem(2, meteorStaff.getItem());
                 player.getInventory().setItem(3, blocks);
                 player.getInventory().setItem(4, blocks);
                 player.getInventory().setItem(5, pickaxe);
                 player.getInventory().setItem(6, gappls);
                 player.getInventory().setItem(7, shadow);
-                player.getInventory().setItem(8, new Earthquake().getItem());
+                player.getInventory().setItem(8, earthquake.getItem());
                 player.updateInventory();
             }
             gameTask = new ActiveGameTask(game, game.getGameTime());
             gameTask.runTaskTimer(Main.getInstance(), 0, 20);
         } else {
             startIn -= 1;
-            this.game.sendMessage("The game will begin in " + startIn + " second" + (startIn == 1 ? "" : "s"));
+            this.game.sendMessage(ChatColor.GOLD + "[Game Manager] " + "The game will begin in " + startIn + " second" + (startIn == 1 ? "" : "s"));
         }
     }
 

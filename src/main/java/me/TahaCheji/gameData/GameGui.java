@@ -1,11 +1,10 @@
-package me.TahaCheji.data;
+package me.TahaCheji.gameData;
 
 import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.GuiItem;
 import dev.triumphteam.gui.guis.PaginatedGui;
 import me.TahaCheji.Main;
-import me.TahaCheji.itemData.MasterItems;
 import me.TahaCheji.util.NBTUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
@@ -14,7 +13,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -106,8 +104,9 @@ public class GameGui implements Listener {
         }
         Player player = (Player) event.getWhoClicked();
         GamePlayer gamePlayer = Main.getInstance().getPlayer(player);
-        Game game = Main.getInstance().getGame(NBTUtils.getString(event.getCurrentItem(), "GameName"));
+        Game game = Main.getInstance().getGame(event.getCurrentItem().getItemMeta().getDisplayName());
         if(game == null) {
+            player.sendMessage("Game no exisit");
             return;
         }
         gamePlayer.setGame(game);

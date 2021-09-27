@@ -1,6 +1,6 @@
 package me.TahaCheji.tasks;
 
-import me.TahaCheji.data.Game;
+import me.TahaCheji.gameData.Game;
 import me.TahaCheji.scoreboards.InGameScoreBoard;
 import org.bukkit.scheduler.BukkitRunnable;
 

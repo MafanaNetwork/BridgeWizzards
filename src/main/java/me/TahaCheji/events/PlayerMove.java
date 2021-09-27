@@ -1,7 +1,7 @@
 package me.TahaCheji.events;
 
 import me.TahaCheji.Main;
-import me.TahaCheji.data.Game;
+import me.TahaCheji.gameData.Game;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

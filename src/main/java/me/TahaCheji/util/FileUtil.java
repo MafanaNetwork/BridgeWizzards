@@ -2,7 +2,7 @@ package me.TahaCheji.util;
 
 import java.io.*;
 
-public class FileDelete {
+public class FileUtil {
 
     public static void delete(File file) {
         if(file.isDirectory()) {

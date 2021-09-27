@@ -5,6 +5,7 @@ import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.GuiItem;
 import dev.triumphteam.gui.guis.PaginatedGui;
 import me.TahaCheji.Main;
+import me.TahaCheji.gameData.GamePlayer;
 import me.TahaCheji.util.ItemUtil;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
@@ -23,7 +24,7 @@ import java.util.List;
 public class ItemGui implements Listener {
 
 
-    public PaginatedGui getAllItemsGui() {
+    public PaginatedGui getAllItemsGui(GamePlayer gamePlayer) {
         PaginatedGui gui = Gui.paginated()
                 .title(Component.text(ChatColor.GOLD + "All Game Items"))
                 .rows(6)
@@ -68,6 +69,8 @@ public class ItemGui implements Listener {
         gui.setItem(6, 7, ItemBuilder.from(Material.PAPER).setName(ChatColor.DARK_GRAY + "Next").asGuiItem(event -> gui.next()));
 
         for(MasterItems masterItems : Main.allItems) {
+            masterItems.setGamePlayer(gamePlayer);
+            masterItems.getMasterAbility().setAbilityDamage((int) (masterItems.getMasterAbility().getAbilityDamage() + gamePlayer.getLevels().getLevel() / 0.5));
             ItemStack itemStack = masterItems.getItem();
             ItemMeta itemMeta = itemStack.getItemMeta();
             List<String> itemLore = new ArrayList<>();

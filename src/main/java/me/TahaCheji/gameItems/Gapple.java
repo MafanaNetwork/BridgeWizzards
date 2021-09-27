@@ -1,7 +1,7 @@
 package me.TahaCheji.gameItems;
 
 import me.TahaCheji.Main;
-import me.TahaCheji.data.GamePlayer;
+import me.TahaCheji.gameData.GamePlayer;
 import me.TahaCheji.itemData.*;
 import me.TahaCheji.util.AbilityUtil;
 import org.bukkit.Bukkit;
@@ -22,7 +22,11 @@ public class Gapple extends MasterItems {
 
 
     public Gapple() {
-        super("Gapple", Material.YELLOW_DYE, ItemType.SPELL, RarityType.GOLD, true, new MasterAbility("Heal", AbilityType.RIGHT_CLICK, 50, 0, "Right click to heal 5 hearts"), true, "");
+        super(null, "Gapple", Material.YELLOW_DYE, ItemType.SPELL, RarityType.GOLD, true, new MasterAbility("Heal", AbilityType.RIGHT_CLICK, 50, 0, "Right click to heal 5 hearts"), true, "");
+    }
+
+    public Gapple(GamePlayer gamePlayer) {
+        super(gamePlayer, "Gapple", Material.YELLOW_DYE, ItemType.SPELL, RarityType.GOLD, true, new MasterAbility("Heal", AbilityType.RIGHT_CLICK, 50, 0, "Right click to heal 5 hearts"), true, "");
     }
 
     @Override

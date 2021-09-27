@@ -1,4 +1,4 @@
-package me.TahaCheji.data;
+package me.TahaCheji.gameData;
 
 import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.guis.Gui;

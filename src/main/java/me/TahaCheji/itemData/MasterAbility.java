@@ -1,5 +1,6 @@
 package me.TahaCheji.itemData;
 
+import me.TahaCheji.gameData.GamePlayer;
 import org.bukkit.ChatColor;
 
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ public class MasterAbility {
     private final List<String> description;
     private final AbilityType type;
     private final int manaCost;
-    private final int abilityDamage;
+    private int abilityDamage;
 
     public MasterAbility(String name, AbilityType type, int manaCost, int damage, String... description) {
         this.name = name;
@@ -23,15 +24,23 @@ public class MasterAbility {
         this.abilityDamage = damage;
     }
 
-    public List<String> toLore() {
+    public List<String> toLore(GamePlayer gamePlayer) {
         List<String> lore = new ArrayList();
         lore.add(ChatColor.GOLD + "Item Ability: " + this.name + " " + ChatColor.GOLD + ChatColor.DARK_GREEN + "[" +  this.type.getText() + "]");
-        lore.add(ChatColor.RED + "Ability Damage: " + abilityDamage + ChatColor.DARK_GRAY + " | " + ChatColor.AQUA + "ManaCost: " + manaCost);
+        if(abilityDamage == 0) {
+            lore.add(ChatColor.RED + "Ability Damage: " + abilityDamage + ChatColor.DARK_GRAY + " | " + ChatColor.AQUA + "ManaCost: " + manaCost);
+        } else {
+            lore.add(ChatColor.RED + "Ability Damage: " + abilityDamage + ChatColor.DARK_GRAY + " [+ " + gamePlayer.getLevels().getLevel() / 0.5 + "]" + " | " + ChatColor.AQUA + "ManaCost: " + manaCost);
+        }
         lore.add("");
         for(String string : description) {
             lore.add(ChatColor.DARK_GRAY + string);
         }
         return lore;
+    }
+
+    public void setAbilityDamage(int abilityDamage) {
+        this.abilityDamage = abilityDamage;
     }
 
     public String getName() {

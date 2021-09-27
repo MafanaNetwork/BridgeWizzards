@@ -1,6 +1,8 @@
-package me.TahaCheji.data;
+package me.TahaCheji.gameData;
 
 import me.TahaCheji.Main;
+import me.TahaCheji.playerData.Levels;
+import me.TahaCheji.playerData.PlayerLocation;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -15,6 +17,7 @@ public class GamePlayer {
     private double MAXMANA;
     private BukkitTask regen;
     private PlayerLocation playerLocation;
+    private Levels levels;
 
 
     public GamePlayer(Player player, Game game) {
@@ -25,6 +28,10 @@ public class GamePlayer {
     public GamePlayer(Player player, PlayerLocation location) {
         this.player = player;
         this.playerLocation = location;
+    }
+
+    public void setLevels(Levels levels) {
+        this.levels = levels;
     }
 
     public Player getPlayer() {
@@ -90,6 +97,10 @@ public class GamePlayer {
                 }
             }
         }.runTaskTimer(Main.getInstance(), 0L, 20L);
+    }
+
+    public Levels getLevels() {
+        return levels;
     }
 
     public BukkitTask getRegen() {

@@ -1,14 +1,20 @@
 package me.TahaCheji;
 
+import it.unimi.dsi.fastutil.Hash;
 import me.TahaCheji.commands.AdminCommand;
 import me.TahaCheji.commands.MainCommand;
-import me.TahaCheji.data.Game;
-import me.TahaCheji.data.GameData;
-import me.TahaCheji.data.GamePlayer;
-import me.TahaCheji.data.PlayerLocation;
+import me.TahaCheji.gameData.Game;
+import me.TahaCheji.gameData.GameData;
+import me.TahaCheji.gameData.GamePlayer;
+import me.TahaCheji.mapUtil.GameMap;
+import me.TahaCheji.playerData.LevelData;
+import me.TahaCheji.playerData.Levels;
+import me.TahaCheji.playerData.PlayerLocation;
 import me.TahaCheji.itemData.MasterItems;
+import me.TahaCheji.scoreboards.LobbyScoreBoard;
 import me.TahaCheji.util.Files;
 import me.TahaCheji.util.ServerVersion;
+import net.kyori.adventure.text.Component;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -36,6 +42,8 @@ public final class Main extends JavaPlugin {
     public static Map<String, MasterItems> items = new HashMap();
     public static Map<Integer, MasterItems> itemIDs = new HashMap();
     public static List<MasterItems> allItems = new ArrayList<>();
+    public static List<GameMap> loadedMaps = new ArrayList<>();
+    private static HashMap<Player, GameMap> playerGameMapHashMap = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -83,7 +91,11 @@ public final class Main extends JavaPlugin {
         for(Player player : Bukkit.getOnlinePlayers()) {
             player.teleport(getLobbyPoint());
             GamePlayer gamePlayer = new GamePlayer(player, PlayerLocation.LOBBY);
+            Levels playerLvl = LevelData.getPlayerLevel(gamePlayer.getPlayer());
+            gamePlayer.setLevels(playerLvl);
+            playerLvl.setPlayer(gamePlayer);
             addGamePlayer(gamePlayer);
+            player.sendMessage(ChatColor.RED + "It is very recommended for you to re join the server this is a reboot");
         }
 
         getCommand("bzAdmin").setExecutor(new AdminCommand());
@@ -94,6 +106,10 @@ public final class Main extends JavaPlugin {
     public void onDisable() {
         for(Game game : activeGames) {
             game.stopGame();
+        }
+        for(GameMap gameMap : loadedMaps) {
+            Bukkit.unloadWorld(gameMap.getWorld(), false);
+            gameMap.unload();
         }
         System.out.println(ChatColor.RED + "Stopping: BridgeWizzards");
     }
@@ -143,13 +159,7 @@ public final class Main extends JavaPlugin {
     }
 
     public void addGamePlayer(GamePlayer gamePlayer) {
-        if(players.contains(gamePlayer)) {
-            System.out.println("could not add game player");
-            return;
-        } else  {
             players.add(gamePlayer);
-        }
-
     }
 
     public Game getGame(Player player) {
@@ -231,6 +241,20 @@ public final class Main extends JavaPlugin {
         return econ != null;
     }
 
+    public static HashMap<Player, GameMap> getPlayerGameMapHashMap() {
+        return playerGameMapHashMap;
+    }
+
+    public static void addGameMap(Player player, GameMap gameMap) {
+        if(playerGameMapHashMap.containsValue(gameMap)) {
+            return;
+        }
+        playerGameMapHashMap.put(player, gameMap);
+    }
+
+    public static void removeGameMap (Player player, GameMap gameMap) {
+        playerGameMapHashMap.remove(player, gameMap);
+    }
 
     public ServerVersion getVersion() {
         return version;

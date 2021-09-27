@@ -1,7 +1,8 @@
 package me.TahaCheji.tasks;
 
 import me.TahaCheji.Main;
-import me.TahaCheji.data.Game;
+import me.TahaCheji.gameData.Game;
+import org.bukkit.ChatColor;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class GameCountdownTask extends BukkitRunnable {
@@ -25,7 +26,7 @@ public class GameCountdownTask extends BukkitRunnable {
           gameRunTask.runTaskTimer(Main.getInstance(), 0, 20);
         } else {
             if (time == 15 || time == 10 || time == 5) {
-                game.sendMessage("You'll be teleported to the game in " + time + " seconds");
+                game.sendMessage(ChatColor.GOLD + "[Game Manager] " +"You'll be teleported to the game in " + time + " seconds");
             }
         }
     }

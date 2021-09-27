@@ -1,4 +1,4 @@
-package me.TahaCheji.data;
+package me.TahaCheji.gameData;
 
 public enum GameMode {
 

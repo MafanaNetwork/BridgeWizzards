@@ -6,6 +6,7 @@ public interface GameMap {
     boolean load();
     void unload();
     boolean restoreFromSource();
+    void saveMap();
 
     boolean isLoaded();
     World getWorld();

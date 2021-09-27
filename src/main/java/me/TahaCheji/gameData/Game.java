@@ -1,12 +1,14 @@
-package me.TahaCheji.data;
+package me.TahaCheji.gameData;
 
 import me.TahaCheji.Main;
 import me.TahaCheji.mapUtil.GameMap;
+import me.TahaCheji.playerData.PlayerLocation;
 import me.TahaCheji.scoreboards.InGameScoreBoard;
 import me.TahaCheji.scoreboards.LobbyScoreBoard;
 import me.TahaCheji.tasks.GameCountdownTask;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -39,7 +41,7 @@ public class Game {
     private List<GamePlayer> activePlayers = new ArrayList<>();
 
     public InGameScoreBoard inGameScoreBoard = new InGameScoreBoard();
-    GameCountdownTask gameCountdownTask;
+    public GameCountdownTask gameCountdownTask = null;
 
 
     public Game(String name, ItemStack gameIcon, GameMode gameMode, int mana, int lives, GameMap map) {
@@ -56,9 +58,9 @@ public class Game {
     }
 
     public void joinGame(GamePlayer gamePlayer) {
-        if (isState(GameState.LOBBY) || isState(GameState.STARTING)) {
+        if (isState(GameState.LOBBY) || isState(GameState.STARTING) || isState(GameState.ACTIVE)) {
             if (activePlayers.size() == 2) {
-                gamePlayer.sendMessage("Error: This game is full.");
+                gamePlayer.sendMessage(ChatColor.GOLD + "[Game Manager] " + "Error: This game is active.");
                 return;
             }
         }
@@ -73,7 +75,7 @@ public class Game {
         gamePlayer.setMana(getMana());
         gamePlayer.setLives(getLives());
         activePlayers.add(gamePlayer);
-        gamePlayer.sendMessage("Game: " + activePlayers.size() + "/" + "2");
+        gamePlayer.sendMessage(ChatColor.GOLD + "[Game Manager] " + "[" + activePlayers.size() + "/" + "2" + "]");
         gamePlayer.setPlayerLocation(PlayerLocation.GAMELOBBY);
         if (p1 == null) {
             p1 = gamePlayer;
@@ -92,13 +94,13 @@ public class Game {
         if (activePlayers.size() == 2 && !isState(GameState.STARTING)) {
             setState(GameState.STARTING);
             inGameScoreBoard.updateScoreBoard(this);
-            sendMessage("The game will begin in 20 seconds...");
+            sendMessage(ChatColor.GOLD + "[Game Manager] " + "The game will begin in 20 seconds...");
             Main.getInstance().addActiveGame(this);
             startCountdown();
         }
     }
 
-    public void leaveGame(GamePlayer gamePlayer) {
+    public void leaveGame(GamePlayer gamePlayer) throws IOException {
         Player player = gamePlayer.getPlayer();
         if (!Main.getInstance().isInGame(player)) {
             return;
@@ -116,10 +118,13 @@ public class Game {
         if (inGameScoreBoard != null) {
             inGameScoreBoard.stopUpdating();
         }
-        gameCountdownTask.getGameRunTask().getGameTask().setGameTimer(300);
-        gameCountdownTask.getGameRunTask().getGameTask().cancel();
-        if (p1 != null) {
-            p1.getPlayer().sendMessage("Game has ended");
+        if(gameCountdownTask != null) {
+            gameCountdownTask.getGameRunTask().getGameTask().setGameTimer(300);
+            gameCountdownTask.getGameRunTask().getGameTask().cancel();
+        }
+        if (p1 != null && p1.getPlayer() != null) {
+            p1.getPlayer().sendMessage(ChatColor.GOLD + "[Game Manager] " + "Game has ended");
+
             p1.getPlayer().teleport(Main.getInstance().getLobbyPoint());
             p1.getPlayer().getPlayer().getInventory().clear();
             p1.getPlayer().getPlayer().getInventory().setArmorContents(null);
@@ -129,7 +134,7 @@ public class Game {
             lobbyScoreBoard.setLobbyScoreBoard(p1);
             lobbyScoreBoard.updateScoreBoard(p1);
         }
-        if (p2 != null) {
+        if (p2 != null && p2.getPlayer() != null) {
             p2.getPlayer().sendMessage("Game has ended");
             p2.getPlayer().teleport(Main.getInstance().getLobbyPoint());
             p2.getPlayer().getPlayer().getInventory().clear();
@@ -154,11 +159,13 @@ public class Game {
         inGameScoreBoard = new InGameScoreBoard();
     }
 
-    public void setWinner(GamePlayer winner, Game game) {
-        game.sendMessage(winner.getName() + " won the Game!");
+    public void setWinner(GamePlayer winner, Game game) throws IOException {
+        game.sendMessage("[Game Manager] " + winner.getName() + " won the Game!");
         Economy econ = Main.getEcon();
         econ.depositPlayer(winner.getPlayer(), 100);
+        winner.getLevels().addXp(30);
         game.setState(Game.GameState.ENDING);
+        winner.getPlayer().sendMessage(ChatColor.GOLD + "[Game Manager] " + "+30 xp +100 coins");
         game.stopGame();
     }
 
@@ -176,15 +183,6 @@ public class Game {
             online.hidePlayer(gamePlayer.getPlayer());
         gamePlayer.teleport(lobbySpawn);
         gamePlayer.getPlayer().setGameMode(org.bukkit.GameMode.CREATIVE);
-        Main.getInstance().playerGameMap.put(p1.getPlayer(), this);
-    }
-
-    public void leaveAdmin (GamePlayer gamePlayer) {
-        for (Player online : Bukkit.getOnlinePlayers())
-            online.showPlayer(gamePlayer.getPlayer());
-        gamePlayer.teleport(Main.getInstance().getLobbyPoint());
-        gamePlayer.getPlayer().setGameMode(org.bukkit.GameMode.SURVIVAL);
-        Main.getInstance().playerGameMap.remove(p1.getPlayer(), this);
     }
 
     public void startCountdown() {
@@ -293,6 +291,16 @@ public class Game {
 
     public GameMode getGameMode() {
         return gameMode;
+    }
+
+    public GamePlayer getOtherPlayer(GamePlayer gamePlayer) {
+        GamePlayer gamePlayer1 = null;
+        for (GamePlayer gamePlayers : getPlayers()) {
+            if(!gamePlayer.getPlayer().getUniqueId().toString().contains(gamePlayer.getPlayer().getUniqueId().toString())) {
+                gamePlayer1 = gamePlayer;
+            }
+        }
+        return gamePlayer1;
     }
 
     public GamePlayer getGamePlayer(Player player) {

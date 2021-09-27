@@ -1,24 +1,24 @@
 package me.TahaCheji.events;
 
 import me.TahaCheji.Main;
-import me.TahaCheji.data.Game;
-import me.TahaCheji.data.GamePlayer;
-import me.TahaCheji.data.PlayerLocation;
+import me.TahaCheji.gameData.Game;
+import me.TahaCheji.gameData.GamePlayer;
+import me.TahaCheji.playerData.PlayerLocation;
 import net.milkbowl.vault.economy.Economy;
-import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Sound;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+
+import java.io.IOException;
 
 public class PlayerDeath implements Listener {
 
     @EventHandler
-    public void onMoveDeathInGame(PlayerMoveEvent event) {
+    public void onMoveDeathInGame(PlayerMoveEvent event) throws IOException {
         Player player = event.getPlayer();
         Game game = Main.getInstance().getGame(player);
         if (game != null && game.getGamePlayer(player) != null) {
@@ -36,7 +36,7 @@ public class PlayerDeath implements Listener {
     }
 
     @EventHandler
-    public void onDamageDeath(EntityDamageByEntityEvent event) {
+    public void onDamageDeath(EntityDamageByEntityEvent event) throws IOException {
         if(!(event.getEntity() instanceof Player)) {
             return;
         }
@@ -51,7 +51,7 @@ public class PlayerDeath implements Listener {
     }
 
 
-    private void handle(PlayerMoveEvent event, Game game) {
+    private void handle(PlayerMoveEvent event, Game game) throws IOException {
         Player player = event.getPlayer();
 
         if (!game.isState(Game.GameState.ACTIVE) && !game.isState(Game.GameState.DEATHMATCH)) {
@@ -60,15 +60,11 @@ public class PlayerDeath implements Listener {
         GamePlayer gamePlayer = game.getGamePlayer(player);
         game.getGamePlayer(player).setLives(game.getGamePlayer(player).getLives() - 1);
         gamePlayer.getPlayer().playSound(player.getLocation(), Sound.BLOCK_GLASS_BREAK, 10, 10);
-        game.sendMessage(player.getDisplayName() + " has died");
+        game.sendMessage(ChatColor.GOLD + "[Game Manager] " + player.getDisplayName() + " has died");
         if (game.getGamePlayer(player).getLives() <= 0) {
             game.getPlayers().remove(gamePlayer);
             GamePlayer winner = game.getPlayers().get(0);
-            game.stopGame();
-            game.sendMessage(winner.getName() + " won the Game!");
-            Economy econ = Main.getEcon();
-            econ.depositPlayer(winner.getPlayer(), 100);
-            game.setState(Game.GameState.ENDING);
+            game.setWinner(winner, game);
         } else {
             if (game.isP1(player)) {
                 game.getP1().teleport(game.getP1Location());
@@ -84,7 +80,7 @@ public class PlayerDeath implements Listener {
         }
     }
 
-    private void handle(EntityDamageByEntityEvent event, Game game) {
+    private void handle(EntityDamageByEntityEvent event, Game game) throws IOException {
         Player player = (Player) event.getEntity();
 
         if (!game.isState(Game.GameState.ACTIVE) && !game.isState(Game.GameState.DEATHMATCH)) {
@@ -96,11 +92,7 @@ public class PlayerDeath implements Listener {
         if (game.getGamePlayer(player).getLives() <= 0) {
             game.getPlayers().remove(gamePlayer);
             GamePlayer winner = game.getPlayers().get(0);
-            game.sendMessage(winner.getName() + " won the Game!");
-            Economy econ = Main.getEcon();
-            econ.depositPlayer(winner.getPlayer(), 100);
-            game.setState(Game.GameState.ENDING);
-            game.stopGame();
+            game.setWinner(winner, game);
         } else {
             if (game.isP1(player)) {
                 game.getP1().teleport(game.getP1Location());

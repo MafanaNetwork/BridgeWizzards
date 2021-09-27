@@ -1,15 +1,16 @@
 package me.TahaCheji.commands;
 
 import me.TahaCheji.Main;
-import me.TahaCheji.data.Game;
-import me.TahaCheji.data.GameData;
-import me.TahaCheji.data.GameGui;
-import me.TahaCheji.data.GamePlayer;
-import org.bukkit.ChatColor;
+import me.TahaCheji.gameData.Game;
+import me.TahaCheji.gameData.GameGui;
+import me.TahaCheji.gameData.GamePlayer;
+import me.TahaCheji.playerData.PlayerLocation;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.io.IOException;
 
 public class MainCommand implements CommandExecutor {
     @Override
@@ -23,10 +24,7 @@ public class MainCommand implements CommandExecutor {
                 }
                 Game game = Main.getInstance().getGame(args[1]);
                 if (game == null) {
-                    return true;
-                }
-                if (game.isState(Game.GameState.ACTIVE)) {
-                    player.sendMessage("That game is active");
+                    player.sendMessage("That Game does not exist");
                     return true;
                 }
                 GamePlayer gamePlayer = Main.getInstance().getPlayer(player);
@@ -40,16 +38,25 @@ public class MainCommand implements CommandExecutor {
             if (args[0].equalsIgnoreCase("leave")) {
                 if (Main.getInstance().isInGame(player)) {
                     Game game = Main.getInstance().getGame(player);
-                    game.leaveGame(Main.getInstance().getPlayer(player));
+                    try {
+                        game.leaveGame(Main.getInstance().getPlayer(player));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     return true;
                 }
             }
             if (args[0].equalsIgnoreCase("hub")) {
                 if (Main.getInstance().isInGame(player)) {
                     Game game = Main.getInstance().getGame(player);
-                    game.leaveGame(Main.getInstance().getPlayer(player));
+                    try {
+                        game.leaveGame(Main.getInstance().getPlayer(player));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     return true;
                 } else {
+                    Main.getInstance().getPlayer(player).setPlayerLocation(PlayerLocation.LOBBY);
                     player.teleport(Main.getInstance().getLobbyPoint());
                 }
             }

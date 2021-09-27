@@ -1,7 +1,7 @@
 package me.TahaCheji.gameItems;
 
 import me.TahaCheji.Main;
-import me.TahaCheji.data.GamePlayer;
+import me.TahaCheji.gameData.GamePlayer;
 import me.TahaCheji.itemData.*;
 import me.TahaCheji.util.AbilityUtil;
 import org.bukkit.*;
@@ -28,8 +28,9 @@ public class ShadowWarp extends MasterItems implements Listener {
     private List<java.util.UUID> shadowVeil = new ArrayList<UUID>();
 
     public ShadowWarp() {
-        super("ShadowWarp", Material.BLACK_DYE, ItemType.SPELL, RarityType.OBSIDAIN, true, new MasterAbility("Shadow Veil", AbilityType.RIGHT_CLICK, 100, 0, "Right click to turn invisible"), true, "Invis baby");
+        super(null,"ShadowWarp", Material.BLACK_DYE, ItemType.SPELL, RarityType.OBSIDAIN, true, new MasterAbility("Shadow Veil", AbilityType.RIGHT_CLICK, 100, 0, "Right click to turn invisible"), true, "Invis baby");
     }
+
 
     @Override
     public void onItemStackCreate(ItemStack var1) {

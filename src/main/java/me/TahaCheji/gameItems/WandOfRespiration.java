@@ -1,7 +1,7 @@
 package me.TahaCheji.gameItems;
 
 import me.TahaCheji.Main;
-import me.TahaCheji.data.GamePlayer;
+import me.TahaCheji.gameData.GamePlayer;
 import me.TahaCheji.itemData.*;
 import me.TahaCheji.managers.DamageManager;
 import me.TahaCheji.util.AbilityUtil;
@@ -16,20 +16,16 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import xyz.xenondevs.particle.ParticleEffect;
-
-import java.io.ObjectStreamException;
-import java.util.List;
 
 public class WandOfRespiration extends MasterItems {
 
 
     public WandOfRespiration() {
-        super("WandOfRespiration", Material.STICK, ItemType.STAFF, RarityType.REDSTONE, true, new MasterAbility("Celestial Damage", AbilityType.RIGHT_CLICK, 55, 2, "Right click to summon a beam dealing 2 damage"), false, "The magic comes from you.");
+        super(null,"WandOfRespiration", Material.STICK, ItemType.STAFF, RarityType.REDSTONE, true, new MasterAbility("Celestial Damage", AbilityType.RIGHT_CLICK, 55, 2, "Right click to summon a beam dealing 2 damage"), false, "The magic comes from you.");
     }
+
 
     @Override
     public void onItemStackCreate(ItemStack var1) {
@@ -46,7 +42,7 @@ public class WandOfRespiration extends MasterItems {
         return false;
     }
 
-    int t = 0;
+
 
     @Override
     public boolean rightClickAirAction(Player player, ItemStack var2) {
@@ -84,6 +80,7 @@ public class WandOfRespiration extends MasterItems {
                             ParticleEffect.FIREWORKS_SPARK.display(loc, 0, 0, 0, .2f, 32, null, Bukkit.getOnlinePlayers());
                             loc.getWorld().playSound(loc, Sound.ENTITY_GENERIC_EXPLODE, 2, 1);
                             new DamageManager(player, (LivingEntity) target, getMasterAbility()).damage();
+                            target.setVelocity(target.getLocation().toVector().subtract(loc.toVector()).multiply(.1).setY(.4));
                             cancel();
                             return;
                         }

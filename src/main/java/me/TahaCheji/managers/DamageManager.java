@@ -1,13 +1,9 @@
 package me.TahaCheji.managers;
 
-import com.gmail.filoghost.holographicdisplays.api.Hologram;
-import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
-import de.tr7zw.changeme.nbtapi.NBTItem;
 import me.TahaCheji.Main;
-import me.TahaCheji.data.Game;
-import me.TahaCheji.data.GamePlayer;
+import me.TahaCheji.gameData.Game;
+import me.TahaCheji.gameData.GamePlayer;
 import me.TahaCheji.itemData.MasterAbility;
-import me.TahaCheji.itemData.MasterItems;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -17,7 +13,6 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerMoveEvent;
 
 public class DamageManager implements Listener {
 

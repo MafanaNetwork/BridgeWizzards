@@ -1,9 +1,11 @@
 package me.TahaCheji.itemData;
 
 import me.TahaCheji.Main;
+import me.TahaCheji.gameData.GamePlayer;
 import me.TahaCheji.util.ItemUtil;
 import me.TahaCheji.util.NBTUtils;
 import org.bukkit.ChatColor;
+import org.bukkit.GameEvent;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -26,6 +28,7 @@ import java.util.List;
 
 public abstract class MasterItems {
 
+    private GamePlayer gamePlayer;
     private final String name;
     private final Material itemMaterial;
     private final ItemType itemType;
@@ -37,7 +40,8 @@ public abstract class MasterItems {
     private int UUID;
 
 
-    public MasterItems(String name, Material itemMaterial, ItemType itemType, RarityType rarityType, boolean glow, MasterAbility masterAbility, boolean oneTimeUse, String... lore) {
+    public MasterItems(GamePlayer gamePlayer, String name, Material itemMaterial, ItemType itemType, RarityType rarityType, boolean glow, MasterAbility masterAbility, boolean oneTimeUse, String... lore) {
+        this.gamePlayer = gamePlayer;
         this.name = name;
         this.itemMaterial = itemMaterial;
         this.itemType = itemType;
@@ -49,7 +53,8 @@ public abstract class MasterItems {
         this.oneTimeUse = oneTimeUse;
     }
 
-    public MasterItems(String name, Material itemMaterial, ItemType itemType, RarityType rarityType, boolean glow, String... lore) {
+    public MasterItems(GamePlayer gamePlayer,String name, Material itemMaterial, ItemType itemType, RarityType rarityType, boolean glow, String... lore) {
+        this.gamePlayer = gamePlayer;
         this.name = name;
         this.itemMaterial = itemMaterial;
         this.itemType = itemType;
@@ -74,7 +79,7 @@ public abstract class MasterItems {
         }
         if (lore != null) {
             if (masterAbility != null) {
-                list.addAll(masterAbility.toLore());
+                list.addAll(masterAbility.toLore(gamePlayer));
             }
             list.add("");
             list.add(ChatColor.GOLD + "" + ChatColor.BOLD + "Item Lore:");
@@ -167,6 +172,10 @@ public abstract class MasterItems {
         return name;
     }
 
+    public GamePlayer getGamePlayer() {
+        return gamePlayer;
+    }
+
     public Material getItemMaterial() {
         return itemMaterial;
     }
@@ -181,6 +190,10 @@ public abstract class MasterItems {
 
     public boolean isGlow() {
         return glow;
+    }
+
+    public void setGamePlayer(GamePlayer gamePlayer) {
+        this.gamePlayer = gamePlayer;
     }
 
     public MasterAbility getMasterAbility() {
