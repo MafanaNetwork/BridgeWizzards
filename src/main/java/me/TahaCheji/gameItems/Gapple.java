@@ -25,10 +25,6 @@ public class Gapple extends MasterItems {
         super(null, "Gapple", Material.YELLOW_DYE, ItemType.SPELL, RarityType.GOLD, true, new MasterAbility("Heal", AbilityType.RIGHT_CLICK, 50, 0, "Right click to heal 5 hearts"), true, "");
     }
 
-    public Gapple(GamePlayer gamePlayer) {
-        super(gamePlayer, "Gapple", Material.YELLOW_DYE, ItemType.SPELL, RarityType.GOLD, true, new MasterAbility("Heal", AbilityType.RIGHT_CLICK, 50, 0, "Right click to heal 5 hearts"), true, "");
-    }
-
     @Override
     public void onItemStackCreate(ItemStack var1) {
 

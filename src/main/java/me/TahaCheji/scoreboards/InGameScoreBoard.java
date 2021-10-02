@@ -43,7 +43,7 @@ public class InGameScoreBoard {
 
         Team playerInfo = board.registerNewTeam("PlayerInfo");
         playerInfo.addEntry(ChatColor.BLACK + "" + ChatColor.GREEN);
-        playerInfo.setPrefix(ChatColor.GRAY + ">> " + ChatColor.GOLD + "Mana: " + player.getMana() + " | Lives: " + player.getLives() + " | " + "P2 Lives: " + game.getOtherPlayer(player).getLives());
+        playerInfo.setPrefix(ChatColor.GRAY + ">> " + ChatColor.GOLD + "Mana: " + player.getMana() + " | Lives: " + player.getLives());
         obj.getScore(ChatColor.BLACK + "" + ChatColor.GREEN).setScore(10);
 
         Score emptyText4 = obj.getScore("      ");
@@ -65,7 +65,7 @@ public class InGameScoreBoard {
                         return;
                     }
                     Scoreboard board = player.getPlayer().getScoreboard();
-                    board.getTeam("PlayerInfo").setPrefix(ChatColor.GRAY + ">> " + ChatColor.GOLD + "Mana: " + player.getMana() + " | Lives: " + player.getLives() + " | " + "P2 Lives: " + game.getOtherPlayer(player).getLives());
+                    board.getTeam("PlayerInfo").setPrefix(ChatColor.GRAY + ">> " + ChatColor.GOLD + "Mana: " + player.getMana() + " | Lives: " + player.getLives());
                     if(game.getGameTime() <= 0) {
                         board.getTeam("GameTime").setPrefix(ChatColor.GRAY + ">> " + ChatColor.GOLD + "Time: " + "Ending");
                     } else {

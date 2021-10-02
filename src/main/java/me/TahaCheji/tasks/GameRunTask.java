@@ -5,6 +5,7 @@ import me.TahaCheji.gameData.Game;
 import me.TahaCheji.gameData.GamePlayer;
 import me.TahaCheji.playerData.PlayerLocation;
 import me.TahaCheji.gameItems.*;
+import me.TahaCheji.util.AbilityUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -102,15 +103,15 @@ public class GameRunTask extends BukkitRunnable {
 
                 WandOfRespiration wandOfRespiration = new WandOfRespiration();
                 wandOfRespiration.setGamePlayer(gamePlayer);
-                wandOfRespiration.getMasterAbility().setAbilityDamage((int) (wandOfRespiration.getMasterAbility().getAbilityDamage() + gamePlayer.getLevels().getLevel() / 0.2));
+                wandOfRespiration.getMasterAbility().setAbilityDamage(new AbilityUtil().abilityDamage(wandOfRespiration, gamePlayer.getLevels()));
 
                 LightningWand lightningWand = new LightningWand();
                 lightningWand.setGamePlayer(gamePlayer);
-                lightningWand.getMasterAbility().setAbilityDamage((int) (lightningWand.getMasterAbility().getAbilityDamage() + gamePlayer.getLevels().getLevel() / 0.2));
+                lightningWand.getMasterAbility().setAbilityDamage(new AbilityUtil().abilityDamage(lightningWand, gamePlayer.getLevels()));
 
                 MeteorStaff meteorStaff = new MeteorStaff();
                 meteorStaff.setGamePlayer(gamePlayer);
-                meteorStaff.getMasterAbility().setAbilityDamage((int) (meteorStaff.getMasterAbility().getAbilityDamage() + gamePlayer.getLevels().getLevel() / 0.2));
+                meteorStaff.getMasterAbility().setAbilityDamage(new AbilityUtil().abilityDamage(meteorStaff, gamePlayer.getLevels()));
 
                 ShadowWarp shadowWarp = new ShadowWarp();
                 shadowWarp.setGamePlayer(gamePlayer);

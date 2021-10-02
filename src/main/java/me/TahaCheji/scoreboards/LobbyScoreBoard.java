@@ -5,6 +5,7 @@ import me.TahaCheji.events.PlayerLeave;
 import me.TahaCheji.gameData.GamePlayer;
 import me.TahaCheji.itemData.RarityType;
 import me.TahaCheji.playerData.PlayerLevels;
+import me.TahaCheji.playerData.StatisticsData;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -19,6 +20,7 @@ public class LobbyScoreBoard {
     public void setLobbyScoreBoard(GamePlayer player) {
         Economy econ = Main.getEcon();
         board = Bukkit.getScoreboardManager().getNewScoreboard();
+        player.setStatistics(StatisticsData.getPlayerStatistics(player.getPlayer()));
         Objective obj = board.registerNewObjective("BridgeWizzards", "dummy", ChatColor.GRAY + "♧" + ChatColor.GOLD + "BridgeWizzards" + ChatColor.GRAY + "♧");
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
 
@@ -64,8 +66,14 @@ public class LobbyScoreBoard {
         Score emptyText4 = obj.getScore("    ");
         emptyText4.setScore(8);
 
+        Score stats = obj.getScore(ChatColor.GRAY + ">> " + ChatColor.GOLD + "Wins: " + player.getStatistics().getWins() + " | " + "Kills: " + player.getStatistics().getKills() + " | Deaths: " + player.getStatistics().getDeaths());
+        stats.setScore(7);
+
+        Score emptyText5 = obj.getScore("     ");
+        emptyText5.setScore(6);
+
         Score score7 = obj.getScore(ChatColor.GRAY + "Mafana.us.to");
-        score7.setScore(7);
+        score7.setScore(5);
 
         player.getPlayer().setScoreboard(board);
     }

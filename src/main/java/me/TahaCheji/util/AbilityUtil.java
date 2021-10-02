@@ -2,6 +2,8 @@ package me.TahaCheji.util;
 
 import me.TahaCheji.Main;
 import me.TahaCheji.itemData.MasterAbility;
+import me.TahaCheji.itemData.MasterItems;
+import me.TahaCheji.playerData.Levels;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
@@ -23,6 +25,10 @@ import java.util.Random;
 public class AbilityUtil {
 
     private static final Random random = new Random();
+
+    public int abilityDamage (MasterItems masterItems, Levels level) {
+        return masterItems.getMasterAbility().getAbilityDamage() + level.getLevel() / 2;
+    }
 
     public static void saturate(Player player, double saturation) {
         if (saturation <= 0)

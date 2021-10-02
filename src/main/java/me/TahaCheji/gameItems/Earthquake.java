@@ -32,10 +32,6 @@ public class Earthquake extends MasterItems {
         super(null, "Earthquake", Material.BROWN_DYE, ItemType.SPELL, RarityType.LAPIS, true,
                 new MasterAbility("One With The Earth", AbilityType.RIGHT_CLICK, 350, 18, "Right Click to create a Earthquake"), true, "Rumble ruble ruble");
     }
-    public Earthquake(GamePlayer gamePlayer) {
-        super(gamePlayer, "Earthquake", Material.BROWN_DYE, ItemType.SPELL, RarityType.LAPIS, true,
-                new MasterAbility("One With The Earth", AbilityType.RIGHT_CLICK, 350, 18, "Right Click to create a Earthquake"), true, "Rumble ruble ruble");
-    }
 
     @Override
     public void onItemStackCreate(ItemStack var1) {

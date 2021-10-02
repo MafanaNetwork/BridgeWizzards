@@ -7,15 +7,15 @@ import org.bukkit.ChatColor;
 public enum PlayerLevels {
 
     ONE(100),
-    TWO(PlayerLevels.ONE.getXp() * 5),
-    THREE(PlayerLevels.TWO.getXp() * 5),
-    FOUR(PlayerLevels.THREE.getXp() * 5),
-    FIVE(PlayerLevels.FOUR.getXp() * 5),
-    SIX(PlayerLevels.FIVE.getXp() * 5),
-    SEVEN(PlayerLevels.SIX.getXp() * 5),
-    EIGHT(PlayerLevels.SEVEN.getXp() * 5),
-    NINE(PlayerLevels.EIGHT.getXp() * 5),
-    TEN(PlayerLevels.NINE.getXp() * 5);
+    TWO(PlayerLevels.ONE.getXp() * 2),
+    THREE(PlayerLevels.TWO.getXp() * 2),
+    FOUR(PlayerLevels.THREE.getXp() * 2),
+    FIVE(PlayerLevels.FOUR.getXp() * 2),
+    SIX(PlayerLevels.FIVE.getXp() * 2),
+    SEVEN(PlayerLevels.SIX.getXp() * 2),
+    EIGHT(PlayerLevels.SEVEN.getXp() * 2),
+    NINE(PlayerLevels.EIGHT.getXp() * 2),
+    TEN(PlayerLevels.NINE.getXp() * 2);
 
     private final int xp;
 

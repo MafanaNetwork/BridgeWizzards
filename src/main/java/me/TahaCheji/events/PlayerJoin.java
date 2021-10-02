@@ -2,12 +2,10 @@ package me.TahaCheji.events;
 
 import me.TahaCheji.Main;
 import me.TahaCheji.gameData.GamePlayer;
-import me.TahaCheji.playerData.PlayerLevels;
-import me.TahaCheji.playerData.PlayerLocation;
-import me.TahaCheji.playerData.Levels;
-import me.TahaCheji.playerData.LevelData;
+import me.TahaCheji.playerData.*;
 import me.TahaCheji.scoreboards.LobbyScoreBoard;
 import org.bukkit.GameMode;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -44,6 +42,24 @@ public class PlayerJoin implements Listener {
         Levels playerLvl = LevelData.getPlayerLevel(gamePlayer.getPlayer());
         gamePlayer.setLevels(playerLvl);
 
+        PlayerStatistics statistics  = new PlayerStatistics(gamePlayer, 0, 0, 0);
+        File playerStats = new File("plugins/BridgeWiz/playerData/" + p.getUniqueId().toString() + "/statistics.yml");
+        FileConfiguration pS = YamlConfiguration.loadConfiguration(playerData);
+        if (!new File("plugins/BridgeWiz/playerData/" + p.getUniqueId().toString()).exists()) {
+            new File("plugins/BridgeWiz/playerData/" + p.getUniqueId().toString()).mkdir();
+        }
+        if (!playerStats.exists()) {
+            playerStats.createNewFile();
+            pS.set("info.playerUUID", statistics.getGamePlayer().getPlayer().getUniqueId().toString());
+            pS.set("info.wins", statistics.getWins());
+            pS.set("info.deaths", statistics.getDeaths());
+            pS.set("info.kills", statistics.getKills());
+            pS.save(playerStats);
+        }
+
+        PlayerStatistics playerStatistics = StatisticsData.getPlayerStatistics(gamePlayer.getPlayer());
+        gamePlayer.setStatistics(playerStatistics);
+
         gamePlayer.getPlayer().setHealth(20);
         gamePlayer.getPlayer().setFoodLevel(20);
         gamePlayer.getPlayer().getInventory().clear();
@@ -56,6 +72,8 @@ public class PlayerJoin implements Listener {
         lobbyScoreBoard.updateScoreBoard(gamePlayer);
         //give them the lobby stuff
     }
+
+
 
 
 }

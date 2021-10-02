@@ -8,11 +8,11 @@ import org.bukkit.WorldCreator;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
 
 public class LocalGameMap implements GameMap {
     private final File sourceWorldFolder;
     private File activeWorldFolder;
-    private File mapWorldFolder;
 
     private World bukkitWorld;
     private boolean isLoaded;
@@ -29,7 +29,6 @@ public class LocalGameMap implements GameMap {
         this.activeWorldFolder = new File(Bukkit.getWorldContainer().getParentFile(),
                 sourceWorldFolder.getName() + "_active_" +
                         System.currentTimeMillis());
-
         try {
             FileUtil.copyFolder(sourceWorldFolder, activeWorldFolder);
             isLoaded = true;
@@ -42,7 +41,7 @@ public class LocalGameMap implements GameMap {
         if(bukkitWorld != null) {
             this.bukkitWorld.setAutoSave(false);
         }
-        Main.loadedMaps.add(this);
+        Main.activeMaps.add(this);
         return isLoaded();
     }
 
@@ -53,13 +52,14 @@ public class LocalGameMap implements GameMap {
         isLoaded = false;
         bukkitWorld = null;
         activeWorldFolder = null;
-        Main.loadedMaps.remove(this);
+        Main.activeMaps.remove(this);
     }
 
     @Override
     public void saveMap() {
         try {
             if(bukkitWorld != null) Bukkit.unloadWorld(bukkitWorld, true);
+            Main.activeMaps.remove(this);
             FileUtil.copyFolder(activeWorldFolder, new File(sourceWorldFolder.getParentFile().getPath(), sourceWorldFolder.getName()));
         } catch (IOException e) {
             e.printStackTrace();

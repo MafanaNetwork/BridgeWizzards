@@ -1,6 +1,8 @@
 package me.TahaCheji.util;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class FileUtil {
 
@@ -15,42 +17,33 @@ public class FileUtil {
         file.delete();
     }
 
-    public static void copyFolder(File src, File dest) throws IOException {
-        if (src.isDirectory()) {
-
-            //if directory not exists, create it
-            if (!dest.exists()) {
-                dest.mkdir();
-            }
-
-            // list all the directory contents
-            String files[] = src.list();
-
-            if (files != null) {
-                for (String file : files) {
-                    //construct the src and dest file structure
-                    File srcFile = new File(src, file);
-                    File destFile = new File(dest, file);
-                    //recursive copy
-                    copyFolder(srcFile, destFile);
+    public static void copyFolder(File source, File target) throws IOException {
+        try {
+            ArrayList<String> ignore = new ArrayList<>(Arrays.asList("uid.dat", "session.lock"));
+            if(!ignore.contains(source.getName())) {
+                if(source.isDirectory()) {
+                    if(!target.exists())
+                        if (!target.mkdirs())
+                            throw new IOException("Couldn't create world directory!");
+                    String files[] = source.list();
+                    for (String file : files) {
+                        File srcFile = new File(source, file);
+                        File destFile = new File(target, file);
+                        copyFolder(srcFile, destFile);
+                    }
+                } else {
+                    InputStream in = new FileInputStream(source);
+                    OutputStream out = new FileOutputStream(target);
+                    byte[] buffer = new byte[1024];
+                    int length;
+                    while ((length = in.read(buffer)) > 0)
+                        out.write(buffer, 0, length);
+                    in.close();
+                    out.close();
                 }
             }
-        } else {
-            // if file, then copy it
-            // Use byte stream to support all file types
-            InputStream in = new FileInputStream(src);
-            OutputStream out = new FileOutputStream(dest);
-
-            byte[] buffer = new byte[1024];
-
-            int length;
-            // copy the file content in bytes
-            while ((length = in.read(buffer)) > 0){
-                out.write(buffer, 0, length);
-            }
-
-            in.close();
-            out.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

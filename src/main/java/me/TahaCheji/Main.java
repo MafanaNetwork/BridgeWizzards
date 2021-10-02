@@ -42,8 +42,8 @@ public final class Main extends JavaPlugin {
     public static Map<String, MasterItems> items = new HashMap();
     public static Map<Integer, MasterItems> itemIDs = new HashMap();
     public static List<MasterItems> allItems = new ArrayList<>();
-    public static List<GameMap> loadedMaps = new ArrayList<>();
     private static HashMap<Player, GameMap> playerGameMapHashMap = new HashMap<>();
+    public static List<GameMap> activeMaps = new ArrayList<>();
 
     @Override
     public void onEnable() {
@@ -88,6 +88,7 @@ public final class Main extends JavaPlugin {
             game.stopGame();
         }
 
+
         for(Player player : Bukkit.getOnlinePlayers()) {
             player.teleport(getLobbyPoint());
             GamePlayer gamePlayer = new GamePlayer(player, PlayerLocation.LOBBY);
@@ -98,19 +99,23 @@ public final class Main extends JavaPlugin {
             player.sendMessage(ChatColor.RED + "It is very recommended for you to re join the server this is a reboot");
         }
 
+        for(Game game : activeGames) {
+            game.stopGame();
+        }
+
+        for(GameMap gameMap : activeMaps) {
+            for(Player player : gameMap.getWorld().getPlayers()) {
+                player.teleport(getLobbyPoint());
+            }
+            gameMap.unload();
+        }
+
         getCommand("bzAdmin").setExecutor(new AdminCommand());
         getCommand("bz").setExecutor(new MainCommand());
     }
 
     @Override
     public void onDisable() {
-        for(Game game : activeGames) {
-            game.stopGame();
-        }
-        for(GameMap gameMap : loadedMaps) {
-            Bukkit.unloadWorld(gameMap.getWorld(), false);
-            gameMap.unload();
-        }
         System.out.println(ChatColor.RED + "Stopping: BridgeWizzards");
     }
 
@@ -124,11 +129,7 @@ public final class Main extends JavaPlugin {
     }
 
     public void removeActiveGame(Game game) {
-        if(activeGames.contains(game)) {
-            activeGames.remove(game);
-        } else {
-            System.out.println("Could not remove active game");
-        }
+        activeGames.remove(game);
     }
 
     public Set<Game> getGames() {

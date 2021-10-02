@@ -60,7 +60,7 @@ public class PlayerDeath implements Listener {
         GamePlayer gamePlayer = game.getGamePlayer(player);
         game.getGamePlayer(player).setLives(game.getGamePlayer(player).getLives() - 1);
         gamePlayer.getPlayer().playSound(player.getLocation(), Sound.BLOCK_GLASS_BREAK, 10, 10);
-        game.sendMessage(ChatColor.GOLD + "[Game Manager] " + player.getDisplayName() + " has died");
+        game.sendMessage(ChatColor.GOLD + "[Game Manager] " + player.getDisplayName() + " has died loving the void");
         if (game.getGamePlayer(player).getLives() <= 0) {
             game.getPlayers().remove(gamePlayer);
             GamePlayer winner = game.getPlayers().get(0);
